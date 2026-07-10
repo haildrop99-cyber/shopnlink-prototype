@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>샤로수길 샵앤링크 — 빙고투어</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{
+  --magenta:#A62C96; --magenta-dark:#7A1E6C; --pink:#F6DFF3; --pink-soft:#FBF1FA;
+  --ink:#241B22; --gray:#8B7F89; --line:#EBDDE9; --paper:#FFFDFE; --bg:#F7EFF6;
+  --clover:#3E8E4F; --gold:#F5B301;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;background:#E9DDE7;color:var(--ink);display:flex;justify-content:center;min-height:100vh}
+#phone{width:100%;max-width:420px;min-height:100vh;background:var(--bg);position:relative;overflow-x:hidden;box-shadow:0 0 48px rgba(90,30,80,.18)}
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.active{display:flex}
+.btn{display:block;width:100%;padding:16px;border:none;border-radius:14px;background:var(--magenta);color:#fff;font-size:16.5px;font-weight:800;font-family:inherit;cursor:pointer;transition:transform .1s;letter-spacing:-.2px;box-shadow:0 4px 14px rgba(166,44,150,.28)}
+.btn:active{transform:scale(.97)}
+.btn:disabled{background:#D9C9D6;box-shadow:none;cursor:default}
+.btn.ghost{background:#fff;color:var(--magenta);border:1.5px solid var(--magenta);box-shadow:none}
+
+/* ═══ 1. 랜딩 ═══ */
+#landing{background:var(--bg)}
+.hero{position:relative;padding:58px 24px 30px;text-align:center;color:#fff;overflow:hidden;
+  background:linear-gradient(165deg,#C445B2 0%,var(--magenta) 42%,#6E1B61 100%)}
+.hero .glow{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 70%);top:-90px;right:-70px;pointer-events:none}
+.hero .badge{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.45);padding:6px 16px;border-radius:20px;font-size:12.5px;font-weight:700;letter-spacing:.6px;margin-bottom:16px;backdrop-filter:blur(2px)}
+.hero h1{font-size:46px;font-weight:900;line-height:1.12;letter-spacing:-1.5px;text-shadow:0 2px 10px rgba(0,0,0,.15)}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,#FFE270,#FFC93C);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .sub{margin-top:12px;font-size:15.5px;font-weight:600;opacity:.96;line-height:1.55}
+/* 키비주얼 콜라주 */
+.kv{margin:24px auto 0;width:250px;height:130px;position:relative}
+.kv .tile{position:absolute;background:rgba(255,255,255,.94);border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(60,10,55,.3)}
+.kv .t1{width:72px;height:72px;font-size:38px;left:8px;top:20px;transform:rotate(-8deg)}
+.kv .t2{width:86px;height:86px;font-size:46px;left:84px;top:4px;transform:rotate(3deg);z-index:2}
+.kv .t3{width:70px;height:70px;font-size:36px;right:10px;top:28px;transform:rotate(9deg)}
+.kv .spark{position:absolute;font-size:20px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.2))}
+.hero .info{margin-top:26px;display:flex;justify-content:center;gap:9px}
+.hero .chip{background:rgba(30,5,28,.28);border:1px solid rgba(255,255,255,.22);border-radius:12px;padding:10px 15px;font-size:13px;font-weight:700}
+.hero .chip b{display:block;font-size:10.5px;font-weight:500;opacity:.72;margin-bottom:3px;letter-spacing:.4px}
+.hero .scroll-hint{margin-top:22px;font-size:11.5px;opacity:.65;letter-spacing:1px}
+.land-body{background:var(--bg);border-radius:26px 26px 0 0;margin-top:-18px;position:relative;padding:30px 22px 8px;flex:1}
+.sec-title{font-size:19px;font-weight:900;margin-bottom:14px;letter-spacing:-.3px;display:flex;align-items:center;gap:8px}
+.sec-title::before{content:"";width:5px;height:18px;border-radius:3px;background:var(--magenta)}
+.welcome{font-size:14.5px;line-height:1.8;color:#54474F;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:20px;margin-bottom:30px;box-shadow:0 2px 10px rgba(120,40,110,.05)}
+.welcome b{color:var(--magenta)}
+.welcome .hello{font-size:16px;font-weight:800;color:var(--ink);display:block;margin-bottom:8px}
+.steps{display:flex;flex-direction:column;gap:11px;margin-bottom:30px}
+.step{display:flex;gap:14px;align-items:center;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:15px 16px;box-shadow:0 2px 10px rgba(120,40,110,.05)}
+.step .num{flex:0 0 46px;height:46px;border-radius:13px;background:var(--pink);color:var(--magenta);font-weight:900;font-size:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+.step .num span{font-size:16px}
+.step h3{font-size:15px;font-weight:800}
+.step p{font-size:12.5px;color:var(--gray);margin-top:3px;line-height:1.5}
+.prizes{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:26px}
+.prize{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:16px 12px;text-align:center;position:relative;box-shadow:0 2px 10px rgba(120,40,110,.05)}
+.prize.first{grid-column:1/-1;background:linear-gradient(135deg,#FFF9E8,#FFF3D0);border-color:#F2DFA4}
+.prize .emo{font-size:36px}
+.prize.first .emo{font-size:44px}
+.prize .rank{display:inline-block;font-size:10.5px;font-weight:800;color:#fff;background:var(--magenta);border-radius:20px;padding:3px 10px;margin-top:8px}
+.prize.first .rank{background:var(--gold);color:#5C4300}
+.prize .name{font-size:13.5px;font-weight:700;margin-top:6px;line-height:1.4}
+.prize .qty{font-size:11px;color:var(--gray);margin-top:2px}
+.keycap-note{background:#EFF7EF;border:1px solid #CDE5CF;border-radius:14px;padding:14px 16px;font-size:12.5px;color:#2E6A3B;line-height:1.6;margin-bottom:4px}
+.today-q{text-align:center;font-size:16px;font-weight:800;color:var(--magenta-dark);margin:6px 0 8px}
+.cta-fix{position:sticky;bottom:0;padding:12px 20px 26px;background:linear-gradient(transparent,var(--bg) 45%)}
+
+/* ═══ 공통 헤더 (빙고투어) ═══ */
+.hdr{padding:16px 18px 12px;position:sticky;top:0;background:rgba(247,239,246,.92);backdrop-filter:blur(8px);z-index:10;border-bottom:1px solid var(--line)}
+.hdr-row{display:flex;align-items:center;gap:10px}
+.hdr .back{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:#fff;font-size:16px;cursor:pointer;color:var(--ink);flex:none}
+.hdr .titles{flex:1;text-align:center}
+.hdr h2{font-size:19px;font-weight:900;letter-spacing:-.3px}
+.hdr .subtit{font-size:11.5px;color:var(--gray);margin-top:2px;font-weight:600}
+.ticket-badge{background:var(--magenta-dark);color:#FFE270;border-radius:20px;padding:7px 12px;font-size:12.5px;font-weight:800;display:flex;gap:4px;align-items:center;flex:none}
+
+/* ═══ 2. 개인정보 ═══ */
+.form-wrap{padding:26px 24px 40px;flex:1}
+.form-wrap .lead{font-size:13.5px;color:#54474F;line-height:1.75;background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:24px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:13px;font-weight:800;margin-bottom:7px}
+.field label i{font-style:normal;color:var(--magenta)}
+.field input{width:100%;padding:15px 16px;border:1.5px solid var(--line);border-radius:13px;font-size:15px;font-family:inherit;background:#fff;color:var(--ink)}
+.field input:focus{outline:none;border-color:var(--magenta);box-shadow:0 0 0 3px rgba(166,44,150,.1)}
+.consent{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1.5px solid var(--line);border-radius:13px;padding:15px;margin:22px 0;cursor:pointer;font-size:13.5px;line-height:1.5}
+.consent input{width:19px;height:19px;accent-color:var(--magenta);flex:none;margin-top:1px}
+.consent.on{border-color:var(--magenta);background:var(--pink-soft)}
+
+/* ═══ 3. 코스 선택 ═══ */
+.course-wrap{padding:22px;flex:1}
+.course-wrap .lead{font-size:13.5px;color:var(--gray);margin-bottom:18px;line-height:1.65}
+.course{background:var(--paper);border:1.5px solid var(--line);border-radius:18px;padding:18px;margin-bottom:12px;cursor:pointer;transition:.15s;box-shadow:0 2px 10px rgba(120,40,110,.05);position:relative;overflow:hidden}
+.course:active{border-color:var(--magenta);transform:scale(.98)}
+.course .tag{font-size:10.5px;font-weight:800;color:var(--magenta);background:var(--pink);border-radius:6px;padding:3px 9px;display:inline-block;letter-spacing:.3px}
+.course.free .tag{background:var(--magenta-dark);color:#FFE270}
+.course h3{font-size:16.5px;font-weight:800;margin:9px 0 6px;letter-spacing:-.3px}
+.course p{font-size:12.5px;color:var(--gray);line-height:1.55}
+.course .route{margin-top:10px;font-size:11.5px;font-weight:700;color:var(--magenta-dark);background:var(--pink-soft);border-radius:8px;padding:7px 10px;display:inline-block}
+
+/* ═══ 4. 빙고 ═══ */
+.bingo-wrap{padding:16px 18px 60px;flex:1}
+.notice{font-size:11.5px;color:var(--gray);line-height:1.6;background:#fff;border:1px dashed #DDC7DA;border-radius:12px;padding:11px 14px;margin-bottom:14px;text-align:center}
+/* 프레임형 빙고판 */
+.board-frame{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:13px;box-shadow:0 6px 24px rgba(120,40,110,.1);position:relative}
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.cell{aspect-ratio:1;border-radius:14px;background:#fff;border:1.5px solid var(--line);box-shadow:inset 0 0 0 4px #fff, inset 0 0 0 5px #F1E5EF;display:flex;align-items:center;justify-content:center;padding:8px;cursor:pointer;position:relative;transition:transform .12s}
+.cell:active{transform:scale(.93)}
+.cell .inner{width:100%;height:100%;border-radius:9px;background:#FAF5F9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;overflow:hidden}
+.cell .cemo{font-size:30px;filter:grayscale(1) opacity(.32);transition:.25s}
+.cell .cname{font-size:9.5px;font-weight:700;color:#B9A9B6;text-align:center;line-height:1.25;word-break:keep-all;padding:0 3px;transition:.25s}
+.cell.empty .inner{background:repeating-linear-gradient(45deg,#FAF5F9,#FAF5F9 6px,#F4EAF2 6px,#F4EAF2 12px)}
+.cell.empty .plus{font-size:24px;color:#CDB8CA;font-weight:300}
+.cell.empty .cname{font-size:9px}
+.cell.stamped .inner{background:linear-gradient(150deg,#F9E4F6,#F1C7EC)}
+.cell.stamped .cemo{filter:none;transform:scale(1.06)}
+.cell.stamped .cname{color:var(--magenta-dark)}
+.cell.stamped{border-color:#E3A9DC}
+.cell .chk{position:absolute;top:5px;right:5px;width:18px;height:18px;border-radius:50%;background:var(--magenta);color:#fff;font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 5px rgba(122,30,108,.4);animation:popin .3s cubic-bezier(.2,1.6,.4,1)}
+@keyframes popin{from{transform:scale(0)}to{transform:scale(1)}}
+.cell.line-done{border-color:var(--magenta);box-shadow:inset 0 0 0 4px #fff, inset 0 0 0 5px #F1E5EF, 0 0 0 2px rgba(166,44,150,.35), 0 4px 12px rgba(166,44,150,.25)}
+.progress{display:flex;gap:8px;margin:14px 0 18px}
+.pbox{flex:1;background:var(--paper);border:1px solid var(--line);border-radius:13px;padding:11px;text-align:center}
+.pbox .pl{font-size:10.5px;color:var(--gray);font-weight:600}
+.pbox .pv{font-size:16px;font-weight:900;color:var(--magenta-dark);margin-top:2px}
+/* 업체 리스트 */
+.store-sec h3{font-size:15px;font-weight:900;margin:4px 0 4px;display:flex;align-items:center;gap:8px}
+.store-sec h3::before{content:"";width:5px;height:15px;border-radius:3px;background:var(--magenta)}
+.store-sec .sub{font-size:11.5px;color:var(--gray);margin-bottom:12px}
+.store{display:flex;align-items:center;gap:12px;background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:12px 14px;margin-bottom:8px;cursor:pointer;transition:.12s}
+.store:active{transform:scale(.98);border-color:var(--magenta)}
+.store .semo{flex:0 0 42px;height:42px;border-radius:12px;background:var(--pink-soft);border:1px solid #F0DFEE;display:flex;align-items:center;justify-content:center;font-size:21px}
+.store .sname{font-size:13.5px;font-weight:800}
+.store .sben{font-size:11.5px;color:var(--gray);margin-top:2px}
+.store .stat{font-size:10px;font-weight:800;border-radius:6px;padding:4px 8px;flex:none}
+.store .stat.on{background:var(--pink);color:var(--magenta)}
+.store .stat.done{background:#E3F1E5;color:var(--clover)}
+.store .stat.off{background:#F1EDF0;color:#B4A8B1}
+
+/* ═══ 바텀시트 ═══ */
+.dim{position:fixed;inset:0;background:rgba(40,12,36,.55);z-index:50;display:none;align-items:flex-end;justify-content:center}
+.dim.show{display:flex}
+.sheet{width:100%;max-width:420px;background:var(--bg);border-radius:26px 26px 0 0;padding:14px 22px 32px;animation:up .3s cubic-bezier(.2,1,.3,1);max-height:88vh;overflow-y:auto}
+@keyframes up{from{transform:translateY(55%)}to{transform:translateY(0)}}
+.sheet .handle{width:42px;height:5px;border-radius:3px;background:#DBC9D8;margin:0 auto 16px}
+/* 쿠폰 카드 (바코드) */
+.coupon{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 10px 30px rgba(90,20,80,.15);margin-bottom:16px}
+.coupon .c-head{background:linear-gradient(135deg,#C445B2,var(--magenta-dark));color:#fff;padding:16px 20px;display:flex;align-items:center;gap:12px}
+.coupon .c-head .cemo{width:46px;height:46px;border-radius:13px;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;font-size:24px}
+.coupon .c-head .nm{font-size:17px;font-weight:900}
+.coupon .c-head .cat{font-size:11px;opacity:.8;margin-top:2px;font-weight:600}
+.coupon .c-body{padding:22px 20px 16px;text-align:center;position:relative}
+.coupon .cond{font-size:13.5px;color:var(--gray);font-weight:700}
+.coupon .ben{font-size:30px;font-weight:900;color:var(--magenta-dark);margin-top:4px;letter-spacing:-.5px}
+.coupon .perf{position:relative;border-top:2.5px dashed #E4D5E2;margin:16px 0 0}
+.coupon .perf::before,.coupon .perf::after{content:"";position:absolute;top:-11px;width:22px;height:22px;border-radius:50%;background:var(--bg)}
+.coupon .perf::before{left:-31px}.coupon .perf::after{right:-31px}
+.coupon .c-code{padding:16px 20px 20px;text-align:center}
+.barcode{height:46px;margin:0 auto;width:200px;background:repeating-linear-gradient(90deg,#241B22 0 2px,transparent 2px 4px,#241B22 4px 7px,transparent 7px 8px,#241B22 8px 9px,transparent 9px 12px,#241B22 12px 14px,transparent 14px 17px)}
+.coupon .c-num{font-size:11px;letter-spacing:3px;color:var(--gray);margin-top:7px;font-weight:600}
+.sheet .hint{font-size:11.5px;color:var(--gray);text-align:center;margin-top:12px;line-height:1.6}
+.picker-list{max-height:48vh;overflow-y:auto;margin-top:4px}
+.sheet h3.pick-t{font-size:17px;font-weight:900;margin:2px 0 14px;text-align:center}
+
+/* ═══ 보드 오버레이 (티켓/응모/완성) ═══ */
+.overlay{position:fixed;inset:0;background:rgba(40,12,36,.6);z-index:60;display:none;align-items:center;justify-content:center;padding:26px}
+.overlay.show{display:flex}
+.ov-card{width:100%;max-width:330px;animation:pop .35s cubic-bezier(.2,1.5,.4,1)}
+@keyframes pop{from{transform:scale(.65);opacity:0}to{transform:scale(1);opacity:1}}
+/* 럭키티켓 */
+.lticket{background:linear-gradient(135deg,#FFF9E9,#FFF);border-radius:20px;padding:26px 22px;text-align:center;position:relative;box-shadow:0 16px 44px rgba(0,0,0,.3)}
+.lticket .lt-top{font-size:13px;font-weight:900;color:var(--magenta);letter-spacing:.3px}
+.tk-visual{margin:16px auto;background:var(--magenta-dark);border-radius:14px;padding:20px 14px;color:#FFE270;position:relative;overflow:hidden}
+.tk-visual::before,.tk-visual::after{content:"";position:absolute;width:24px;height:24px;border-radius:50%;background:#FFF9E9;top:50%;transform:translateY(-50%)}
+.tk-visual::before{left:-12px}.tk-visual::after{right:-12px}
+.tk-visual .lt{font-size:14px;letter-spacing:5px;font-weight:800}
+.tk-visual .ln{font-size:30px;font-weight:900;margin-top:4px}
+.tk-visual .dots{position:absolute;top:8px;left:0;right:0;display:flex;justify-content:center;gap:6px}
+.tk-visual .dots i{width:4px;height:4px;border-radius:50%;background:rgba(255,226,112,.4)}
+.lticket .small{font-size:11px;color:var(--gray);line-height:1.65;margin:12px 0 16px}
+/* 응모완료 / 카운트다운 */
+.luck-card{background:#fff;border-radius:20px;padding:30px 24px;text-align:center;box-shadow:0 16px 44px rgba(0,0,0,.3)}
+.luck-card .clover{font-size:52px;display:inline-block;animation:sway 1.6s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+.luck-card h3{font-size:21px;font-weight:900;line-height:1.35;margin-top:10px}
+.luck-card h3 em{font-style:normal;color:var(--magenta)}
+.luck-card .cnum{font-size:66px;font-weight:900;color:var(--clover);line-height:1.1;margin:8px 0 2px}
+.luck-card .going{font-size:14px;font-weight:700;color:var(--gray)}
+.luck-card .tip{margin-top:16px;font-size:11.5px;color:var(--magenta-dark);background:var(--pink-soft);border-radius:10px;padding:10px 12px;font-weight:700;line-height:1.5}
+/* 빙고 완성 도장 */
+.expert-card{background:#fff;border-radius:20px;padding:30px 24px;text-align:center;box-shadow:0 16px 44px rgba(0,0,0,.3)}
+.expert-card h3{font-size:26px;font-weight:900;color:var(--magenta)}
+.expert-card p{font-size:13.5px;color:#54474F;line-height:1.7;margin-top:10px}
+.expert-card p b{color:var(--magenta-dark)}
+.seal{width:110px;height:110px;margin:20px auto 6px;border:4px solid #C0392B;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#C0392B;transform:rotate(-12deg);position:relative;background:rgba(255,255,255,.9);animation:stampIn .5s cubic-bezier(.2,1.6,.4,1) .3s both}
+@keyframes stampIn{0%{transform:rotate(-12deg) scale(2.4);opacity:0}100%{transform:rotate(-12deg) scale(1);opacity:1}}
+.seal::before{content:"";position:absolute;inset:5px;border:1.5px solid rgba(192,57,43,.6);border-radius:50%}
+.seal .s1{font-size:12px;font-weight:800;letter-spacing:1px}
+.seal .s2{font-size:19px;font-weight:900;letter-spacing:1px}
+.seal .ribbon{position:absolute;bottom:-14px;font-size:22px;transform:rotate(12deg)}
+.gen-msg{margin-top:20px;font-size:13px;font-weight:800;color:var(--gray)}
+.gen-msg .gdots::after{content:"";animation:dots 1.2s steps(4) infinite}
+@keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+
+/* 토스트 & 컨페티 */
+#toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 22px;border-radius:30px;font-size:13.5px;font-weight:700;z-index:90;display:none;white-space:nowrap;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+.confetti{position:fixed;top:-14px;z-index:80;animation:fall linear forwards;pointer-events:none}
+@keyframes fall{to{transform:translateY(112vh) rotate(720deg)}}
+.proto-tag{position:fixed;top:10px;right:10px;z-index:95;background:rgba(36,27,34,.7);color:#fff;font-size:10px;padding:4px 9px;border-radius:12px;letter-spacing:.6px}
+</style>
+</head>
+<body>
+<div id="phone">
+<div class="proto-tag">PROTOTYPE</div>
+
+<!-- ═══ 1. 랜딩 ═══ -->
+<section class="screen active" id="landing">
+  <div class="hero">
+    <div class="glow"></div>
+    <div class="badge">2026 샤로수길 로컬브랜드</div>
+    <h1>샵앤링크<br><em>빙고투어</em></h1>
+    <p class="sub">먹고, 걷고, 혜택받고!<br>샤로수길 숨은 맛집을 찾다 보면 만나는 경품들</p>
+    <div class="kv">
+      <div class="tile t1">🍜</div><div class="tile t2">🎟️</div><div class="tile t3">☕</div>
+      <span class="spark" style="top:-4px;left:64px">✨</span>
+      <span class="spark" style="bottom:-4px;right:66px">🍀</span>
+    </div>
+    <div class="info">
+      <div class="chip"><b>진행 일정</b>2026.08.10 – 09.11</div>
+      <div class="chip"><b>진행 구역</b>샤로수길 전구역</div>
+    </div>
+    <div class="scroll-hint">▼ 아래로 내려 게임 소개 보기</div>
+  </div>
+  <div class="land-body">
+    <div class="welcome">
+      <span class="hello">샤로수길에 오신 여러분, 환영합니다! 🙌</span>
+      <b>8월 한 달간</b>, 샤로수길 곳곳에서 특별한 <b>빙고투어</b>가 진행됩니다.<br><br>
+      대표 맛집부터 골목 속 숨은 가게까지, 원하는 곳을 방문하고 다양한 할인·증정 혜택을 받아보세요.<br><br>
+      다양한 혜택을 받을수록 완성되는 빙고와 함께 여러분들을 기다리고 있는 <b>특별한 리워드</b>, 모든 빙고를 완성하면 <b>럭키드로우 응모까지!?</b>
+    </div>
+    <h2 class="sec-title">게임 소개</h2>
+    <div class="steps">
+      <div class="step"><div class="num">STEP<span>1</span></div><div><h3>코스 선택</h3><p>취향에 맞는 큐레이션 코스 또는 자율 선택으로 빙고판 구성</p></div></div>
+      <div class="step"><div class="num">STEP<span>2</span></div><div><h3>스탬프 수집</h3><p>점포 방문 후 할인 쿠폰을 사용하여 결제 시 스탬프 획득</p></div></div>
+      <div class="step"><div class="num">STEP<span>3</span></div><div><h3>혜택 받기</h3><p>빙고 한 줄 완성 시 완주 굿즈 증정 + 럭키드로우 응모권 지급</p></div></div>
+    </div>
+    <h2 class="sec-title">럭키드로우 상품</h2>
+    <div class="prizes">
+      <div class="prize first"><div class="emo">📱</div><div class="rank">1등 · 1명</div><div class="name">iPad Wi-Fi 128GB — 실버</div></div>
+      <div class="prize"><div class="emo">📷</div><div class="rank">2등 · 2명</div><div class="name">후지필름 인스탁스<br>미니11 카메라</div></div>
+      <div class="prize"><div class="emo">🍱</div><div class="rank">3등 · 5명</div><div class="name">배달의민족<br>5만원 상품권</div></div>
+      <div class="prize"><div class="emo">☕</div><div class="rank">4등 · 50명</div><div class="name">커피 기프티콘</div><div class="qty">문자 발송</div></div>
+      <div class="prize"><div class="emo">⌨️</div><div class="rank">완주 굿즈</div><div class="name">3구 키캡</div><div class="qty">빙고 한 줄 완성 시</div></div>
+    </div>
+    <div class="keycap-note">🍀 빙고 한 줄을 완성할 때마다 럭키드로우 응모권이 자동 지급돼요. 완주 굿즈는 일일 한정 수량(총 500개)으로 제공됩니다.</div>
+    <p class="today-q">오늘은 어디부터 즐겨볼까요?</p>
+    <div class="cta-fix"><button class="btn" onclick="go('privacy')">샵앤링크 참여하기</button></div>
+  </div>
+</section>
+
+<!-- ═══ 2. 개인정보 ═══ -->
+<section class="screen" id="privacy">
+  <div class="hdr"><div class="hdr-row"><button class="back" onclick="go('landing')">←</button><div class="titles"><h2>개인정보 수집·이용 안내</h2></div><div style="width:34px"></div></div></div>
+  <div class="form-wrap">
+    <p class="lead">빙고 완성 시 <b>경품 자동 응모 및 당첨자 안내</b>를 위해 최소한의 개인정보를 수집합니다. 수집된 정보는 본 이벤트 운영 및 경품 지급 목적으로만 사용되며, 이벤트 종료 후 정해진 기간 내 안전하게 폐기됩니다.</p>
+    <label class="consent" id="consent-row"><input type="checkbox" id="f-agree" onchange="checkForm()"><span>개인정보 수집 및 이용에 동의합니다 <i style="font-style:normal;color:var(--magenta);font-weight:800">(필수)</i></span></label>
+    <div class="field"><label>이름 <i>*</i></label><input id="f-name" placeholder="이름을 입력해주세요" oninput="checkForm()"></div>
+    <div class="field"><label>전화번호 <i>*</i></label><input id="f-phone" inputmode="tel" placeholder="010-0000-0000" oninput="checkForm()"></div>
+    <div class="field"><label>주소 <i>*</i></label><input id="f-addr" placeholder="경품 수령 주소를 입력해주세요" oninput="checkForm()"></div>
+    <button class="btn" id="btn-start" disabled onclick="go('course')" style="margin-top:8px">빙고 게임 시작하기</button>
+  </div>
+</section>
+
+<!-- ═══ 3. 코스 선택 ═══ -->
+<section class="screen" id="course">
+  <div class="hdr"><div class="hdr-row"><button class="back" onclick="go('privacy')">←</button><div class="titles"><h2>코스 선택</h2></div><div style="width:34px"></div></div></div>
+  <div class="course-wrap">
+    <p class="lead">취향에 맞는 큐레이션 코스를 고르면 빙고판이 자동으로 채워져요.<br>직접 고르고 싶다면 자율 선택!</p>
+    <div class="course" onclick="startBingo('solo')"><span class="tag">큐레이션 코스</span><h3>🍚 혼자라도 괜찮은 하루</h3><p>혼자여서 더 완벽한 하루, 눈치 볼 것 없이 즐기는 코스</p><div class="route">혼밥 식당 → 카페 → 코인노래방</div></div>
+    <div class="course" onclick="startBingo('quit')"><span class="tag">큐레이션 코스</span><h3>🔥 오늘 퇴사하고 싶은 사람</h3><p>매운맛으로 스트레스 리셋, 시원하게 마무리하는 코스</p><div class="route">매운 음식 → 맥주 한잔 → 노래방</div></div>
+    <div class="course" onclick="startBingo('date')"><span class="tag">큐레이션 코스</span><h3>💛 데이트 어디가지?</h3><p>고민은 그만, 걷기만 해도 코스가 완성되는 데이트</p><div class="route">이국적인 음식 → 카페 → 소품샵</div></div>
+    <div class="course free" onclick="startBingo('free')"><span class="tag">자율 선택</span><h3>🧩 내 맘대로 빙고판 채우기</h3><p>참여 업체 리스트에서 원하는 9곳을 골라 원하는 칸에 배치해요</p></div>
+  </div>
+</section>
+
+<!-- ═══ 4. 빙고 ═══ -->
+<section class="screen" id="bingo">
+  <div class="hdr"><div class="hdr-row"><button class="back" onclick="go('course')">←</button><div class="titles"><h2>빙고투어</h2><div class="subtit">참여업체 혜택받고 빙고에 도전하세요 ☺</div></div><div class="ticket-badge">🎟️<span id="tk-count">0</span>/8</div></div></div>
+  <div class="bingo-wrap">
+    <div class="board-frame"><div class="board" id="board"></div></div>
+    <p class="notice">※ 빙고 한 줄을 완성할 때마다 럭키드로우 응모권이 자동 지급되며,<br>최대 8장까지 획득 가능합니다.</p>
+    <div class="progress">
+      <div class="pbox"><div class="pl">스탬프</div><div class="pv" id="prog-stamp">0 / 9</div></div>
+      <div class="pbox"><div class="pl">완성한 줄</div><div class="pv" id="prog-line">0 / 8</div></div>
+      <div class="pbox"><div class="pl">응모권</div><div class="pv" id="prog-tk">0장</div></div>
+    </div>
+    <div class="store-sec">
+      <h3>참여 업체 리스트</h3>
+      <p class="sub">업체를 탭하면 할인 쿠폰을 확인할 수 있어요</p>
+      <div id="store-list"></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- 쿠폰 바텀시트 -->
+<div class="dim" id="sheet-dim" onclick="if(event.target===this)hideSheet()">
+  <div class="sheet">
+    <div class="handle"></div>
+    <div class="coupon">
+      <div class="c-head"><div class="cemo" id="sh-emo"></div><div><div class="nm" id="sh-name"></div><div class="cat" id="sh-cat"></div></div></div>
+      <div class="c-body"><div class="cond" id="sh-cond"></div><div class="ben" id="sh-ben"></div><div class="perf"></div></div>
+      <div class="c-code"><div class="barcode"></div><div class="c-num" id="sh-code">SHOP-LINK-2026</div></div>
+    </div>
+    <button class="btn" id="sh-btn"></button>
+    <p class="hint" id="sh-hint"></p>
+  </div>
+</div>
+
+<!-- 자율선택 피커 -->
+<div class="dim" id="picker-dim" onclick="if(event.target===this)hideSheet()">
+  <div class="sheet">
+    <div class="handle"></div>
+    <h3 class="pick-t">빙고판에 넣을 업체 선택</h3>
+    <div class="picker-list" id="picker-list"></div>
+  </div>
+</div>
+
+<!-- 럭키티켓 오버레이 -->
+<div class="overlay" id="ticket-dim">
+  <div class="ov-card"><div class="lticket">
+    <div class="lt-top" id="tk-title">빙고 한 줄 완성! 🎉</div>
+    <div class="tk-visual"><div class="dots"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="lt">LUCKY TICKET</div><div class="ln" id="tk-num">× 1</div></div>
+    <p class="small">※ '응모하기' 버튼 클릭 시 자동 응모되며, 행사 종료 후 추첨을 통해<br>당첨자에게 개별 안내가 진행될 예정입니다.</p>
+    <button class="btn" onclick="submitTicket()">응모하기</button>
+  </div></div>
+</div>
+
+<!-- 응모 접수 / 카운트다운 오버레이 -->
+<div class="overlay" id="done-dim">
+  <div class="ov-card"><div class="luck-card">
+    <span class="clover">🍀</span>
+    <div id="ld-stage1"><h3>응모권이 <em>샤로록</em><br>접수됐어요!</h3></div>
+    <div id="ld-stage2" style="display:none"><div class="cnum" id="cd-num">3</div><div class="going">행운이 찾아가는 중…</div></div>
+    <div class="tip">* 당첨 확률 높이는 꿀팁: 빙고 한 줄 더 완성하기!</div>
+  </div></div>
+</div>
+
+<!-- 빙고 전체 완성 오버레이 -->
+<div class="overlay" id="allclear-dim">
+  <div class="ov-card"><div class="expert-card">
+    <h3>빙고 완성!!</h3>
+    <p>샤로수길을 제대로 즐기셨군요!<br>당신을 <b>샤로수길 전문가</b>로 인정합니다</p>
+    <div class="seal"><div class="s1">SHAROSU-GIL</div><div class="s2">샤로수길<br>전문가</div><div class="ribbon">🎖️</div></div>
+    <div class="gen-msg">럭키드로우 응모권 생성중<span class="gdots"></span></div>
+  </div></div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ═══ 데이터 ═══ */
+var STORES = {
+  kiko:  {name:"살롱드키코", emo:"🍰", cat:"디저트 카페", cond:"1만원 이상 구매시", ben:"10% 할인"},
+  embro: {name:"엠브로돈가스", emo:"🍛", cat:"돈가스 전문점", cond:"돈가스 주문 시", ben:"음료 1잔 증정"},
+  chili: {name:"칠리향도삭면", emo:"🍜", cat:"중식·마라", cond:"도삭면 주문 시", ben:"꿔바로우 30% 할인"},
+  eunh:  {name:"은행골", emo:"🍣", cat:"일식·초밥", cond:"초밥 세트 주문 시", ben:"우동 서비스"},
+  yoon:  {name:"에프터팜윤약국", emo:"💊", cat:"약국", cond:"영양제 구매 시", ben:"비타민 샘플 증정"},
+  star:  {name:"스타버스코인노래방", emo:"🎤", cat:"코인노래방", cond:"30분 이용 시", ben:"10분 추가"},
+  wink:  {name:"윙크렌즈스토어", emo:"👁️", cat:"렌즈샵", cond:"렌즈 구매 시", ben:"케어용품 증정"},
+  holly: {name:"할리스", emo:"☕", cat:"카페", cond:"음료 주문 시", ben:"사이즈업 무료"},
+  remem: {name:"서울리멤버치과", emo:"🦷", cat:"치과", cond:"방문 시", ben:"스케일링 상담 무료"},
+  barun: {name:"바른삼성정형외과", emo:"🦴", cat:"정형외과", cond:"방문 시", ben:"체형 상담 무료"},
+  theone:{name:"서울대입구더원내과", emo:"🩺", cat:"내과", cond:"접수 시", ben:"예방접종 10% 할인"},
+  mira:  {name:"연세미라클의원", emo:"✨", cat:"피부과", cond:"방문 시", ben:"피부 상담 무료"},
+  junco: {name:"준코", emo:"🍺", cat:"노래주점", cond:"주류 2병 이상 주문 시", ben:"안주 1개 서비스"}
+};
+var COURSES = {
+  solo:["embro","holly","star","kiko","eunh","wink","chili","yoon","junco"],
+  quit:["chili","junco","star","embro","kiko","holly","mira","barun","eunh"],
+  date:["eunh","kiko","wink","chili","holly","star","embro","mira","junco"]
+};
+var LINES=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+
+/* ═══ 상태 ═══ */
+var board=[null,null,null,null,null,null,null,null,null];
+var stamped=[false,false,false,false,false,false,false,false,false];
+var doneLines=[], tickets=0, pendingTickets=0, mode="free", pickTarget=null;
+
+function $(id){return document.getElementById(id);}
+function go(id){
+  var s=document.querySelectorAll(".screen");
+  for(var i=0;i<s.length;i++) s[i].classList.remove("active");
+  $(id).classList.add("active"); window.scrollTo(0,0);
+}
+function hideEl(id){$(id).classList.remove("show");}
+function showEl(id){$(id).classList.add("show");}
+function toast(msg){
+  var t=$("toast"); t.textContent=msg; t.style.display="block";
+  clearTimeout(t._h); t._h=setTimeout(function(){t.style.display="none";},2200);
+}
+function checkForm(){
+  var ok=$("f-name").value.trim()&&$("f-phone").value.trim()&&$("f-addr").value.trim()&&$("f-agree").checked;
+  $("btn-start").disabled=!ok;
+  $("consent-row").classList.toggle("on",$("f-agree").checked);
+}
+
+/* ═══ 게임 시작 ═══ */
+function startBingo(m){
+  mode=m;
+  stamped=[false,false,false,false,false,false,false,false,false];
+  doneLines=[]; tickets=0;
+  board = (m==="free") ? [null,null,null,null,null,null,null,null,null] : COURSES[m].slice();
+  render(); go("bingo");
+  toast(m==="free" ? "빈 칸을 눌러 업체를 배치해보세요!" : "코스가 빙고판에 채워졌어요!");
+}
+
+/* ═══ 렌더 ═══ */
+function isInDoneLine(i){
+  for(var k=0;k<doneLines.length;k++){ if(LINES[doneLines[k]].indexOf(i)>=0) return true; }
+  return false;
+}
+function render(){
+  var b=$("board"); b.innerHTML="";
+  board.forEach(function(key,i){
+    var c=document.createElement("div"); c.className="cell";
+    if(!key){
+      c.className+=" empty";
+      c.innerHTML='<div class="inner"><div class="plus">＋</div><div class="cname">업체 선택</div></div>';
+      c.onclick=function(){openPicker(i);};
+    }else{
+      var s=STORES[key];
+      var chk = stamped[i] ? '<div class="chk">✓</div>' : '';
+      c.innerHTML='<div class="inner"><div class="cemo">'+s.emo+'</div><div class="cname">'+s.name+'</div></div>'+chk;
+      if(stamped[i]) c.className+=" stamped";
+      if(stamped[i]&&isInDoneLine(i)) c.className+=" line-done";
+      c.onclick=function(){openStore(key,i);};
+    }
+    b.appendChild(c);
+  });
+  var sc=stamped.filter(Boolean).length;
+  $("prog-stamp").textContent=sc+" / 9";
+  $("prog-line").textContent=doneLines.length+" / 8";
+  $("prog-tk").textContent=tickets+"장";
+  $("tk-count").textContent=tickets;
+
+  var list=$("store-list"); list.innerHTML="";
+  Object.keys(STORES).forEach(function(key){
+    var s=STORES[key], idx=board.indexOf(key);
+    var stat = idx<0 ? '<span class="stat off">미배치</span>'
+             : stamped[idx] ? '<span class="stat done">방문완료</span>'
+             : '<span class="stat on">빙고판</span>';
+    var d=document.createElement("div"); d.className="store";
+    d.innerHTML='<div class="semo">'+s.emo+'</div><div style="flex:1"><div class="sname">'+s.name+'</div><div class="sben">'+s.cond+' '+s.ben+'</div></div>'+stat;
+    d.onclick=function(){openStore(key, board.indexOf(key));};
+    list.appendChild(d);
+  });
+}
+
+/* ═══ 자율선택 피커 ═══ */
+function openPicker(idx){
+  pickTarget=idx;
+  var pl=$("picker-list"); pl.innerHTML="";
+  Object.keys(STORES).forEach(function(key){
+    if(board.indexOf(key)>=0) return;
+    var s=STORES[key];
+    var d=document.createElement("div"); d.className="store";
+    d.innerHTML='<div class="semo">'+s.emo+'</div><div style="flex:1"><div class="sname">'+s.name+'</div><div class="sben">'+s.cond+' '+s.ben+'</div></div><span class="stat on">담기</span>';
+    d.onclick=function(){ board[pickTarget]=key; hideSheet(); clickSound(); render(); };
+    pl.appendChild(d);
+  });
+  showEl("picker-dim");
+}
+function hideSheet(){hideEl("sheet-dim");hideEl("picker-dim");}
+
+/* ═══ 쿠폰 시트 ═══ */
+function openStore(key, idx){
+  var s=STORES[key];
+  $("sh-emo").textContent=s.emo;
+  $("sh-name").textContent=s.name;
+  $("sh-cat").textContent=s.cat;
+  $("sh-cond").textContent=s.cond;
+  $("sh-ben").textContent=s.ben;
+  $("sh-code").textContent="SHOPNLINK-2026-"+key.toUpperCase();
+  var btn=$("sh-btn"), hint=$("sh-hint");
+  if(idx>=0 && stamped[idx]){
+    btn.textContent="스탬프 획득 완료 ✓"; btn.disabled=true; btn.onclick=null;
+    hint.textContent="이미 방문한 업체예요.";
+  }else if(idx>=0){
+    btn.textContent="매장에서 쿠폰 사용하기"; btn.disabled=false;
+    hint.textContent="※ 결제 시 직원에게 이 화면을 보여주세요. 쿠폰 사용 확인 후 스탬프가 찍힙니다.";
+    btn.onclick=function(){hideSheet();stamp(idx);};
+  }else{
+    btn.textContent="빙고판에 없는 업체예요"; btn.disabled=true; btn.onclick=null;
+    hint.textContent = mode==="free" ? "빙고판의 빈 칸을 눌러 이 업체를 추가할 수 있어요." : "이번 코스에 포함되지 않은 업체입니다.";
+  }
+  showEl("sheet-dim");
+}
+
+/* ═══ 스탬프 & 빙고 판정 ═══ */
+function stamp(idx){
+  stamped[idx]=true; clickSound();
+  var newly=0;
+  LINES.forEach(function(line,li){
+    if(doneLines.indexOf(li)<0 && line.every(function(i){return stamped[i];})){
+      doneLines.push(li); newly++;
+    }
+  });
+  render();
+  if(newly>0){
+    pendingTickets=Math.min(newly, 8-tickets);
+    if(pendingTickets<=0){toast("응모권은 최대 8장까지 지급돼요!");return;}
+    var all=stamped.every(Boolean);
+    setTimeout(function(){
+      if(all){
+        confetti(); showEl("allclear-dim");
+        setTimeout(function(){ hideEl("allclear-dim"); showTicket(newly,true); },2200);
+      }else showTicket(newly,false);
+    },550);
+  }else toast("스탬프 획득! ✓");
+}
+function showTicket(n,all){
+  $("tk-title").textContent = all ? "모든 빙고 완성! 🏆" : (n>1 ? "빙고 "+n+"줄 동시 완성! 🎉" : "빙고 한 줄 완성! 🎉");
+  $("tk-num").textContent="× "+pendingTickets;
+  confetti(); showEl("ticket-dim");
+}
+function submitTicket(){
+  clickSound();
+  tickets+=pendingTickets; pendingTickets=0;
+  hideEl("ticket-dim"); render();
+  /* PDF 플로우: 접수 안내 → 3·2·1 카운트다운 → 게임 복귀 */
+  $("ld-stage1").style.display="block"; $("ld-stage2").style.display="none";
+  showEl("done-dim");
+  setTimeout(function(){
+    $("ld-stage1").style.display="none"; $("ld-stage2").style.display="block";
+    var n=3; $("cd-num").textContent=n;
+    var iv=setInterval(function(){
+      n--;
+      if(n<=0){clearInterval(iv);hideEl("done-dim");}
+      else $("cd-num").textContent=n;
+    },800);
+  },1300);
+}
+
+/* ═══ 이펙트 ═══ */
+function confetti(){
+  var emos=["🎊","🎉","✨","💜","🍀","⭐","🩷"];
+  for(var i=0;i<28;i++){
+    var c=document.createElement("div"); c.className="confetti";
+    c.textContent=emos[Math.floor(Math.random()*emos.length)];
+    c.style.left=Math.random()*100+"vw";
+    c.style.animationDuration=(1.6+Math.random()*1.7)+"s";
+    c.style.fontSize=(13+Math.random()*15)+"px";
+    document.body.appendChild(c);
+    (function(el){setTimeout(function(){el.remove();},3600);})(c);
+  }
+}
+function clickSound(){ /* 클리커 사운드 효과 */
+  try{
+    var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+    var ctx=clickSound._ctx||(clickSound._ctx=new AC());
+    var o=ctx.createOscillator(),g=ctx.createGain();
+    o.type="triangle";o.frequency.value=880;
+    g.gain.setValueAtTime(.15,ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.12);
+    o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+.12);
+  }catch(e){}
+}
+render();
+</script>
+</body>
+</html>
