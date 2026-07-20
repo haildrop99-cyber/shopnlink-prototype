@@ -268,7 +268,7 @@ body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;backg
     <div class="field"><label>이름 <i>*</i></label><input id="f-name" placeholder="이름을 입력해주세요" oninput="checkForm()"></div>
     <div class="field"><label>전화번호 <i>*</i></label><input id="f-phone" inputmode="tel" placeholder="010-0000-0000" oninput="checkForm()"></div>
     <div class="field"><label>주소 <i>*</i></label><input id="f-addr" placeholder="경품 수령 주소를 입력해주세요" oninput="checkForm()"></div>
-    <button class="btn" id="btn-start" disabled onclick="go('course')" style="margin-top:8px">빙고 게임 시작하기</button>
+    <button class="btn" id="btn-start" disabled onclick="registerUser()" style="margin-top:8px">빙고 게임 시작하기</button>
   </div>
 </section>
 
@@ -412,8 +412,37 @@ function startBingo(m){
   stamped=[false,false,false,false,false,false,false,false,false];
   doneLines=[]; tickets=0;
   board = (m==="free") ? [null,null,null,null,null,null,null,null,null] : COURSES[m].slice();
-  render(); go("bingo");
+  render(); saveState(); go("bingo");
   toast(m==="free" ? "빈 칸을 눌러 업체를 배치해보세요!" : "코스가 빙고판에 채워졌어요!");
+}
+
+/* ═══ 저장/복원 & 서버 연동 ═══ */
+function getUser(){try{return JSON.parse(localStorage.getItem('snl_user'))}catch(e){return null}}
+function saveState(){
+  try{localStorage.setItem('snl_state',JSON.stringify({mode:mode,board:board,stamped:stamped,doneLines:doneLines,tickets:tickets}))}catch(e){}
+}
+function api(path,data){
+  try{fetch('/api/'+path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(data)}).catch(function(){});}catch(e){}
+}
+function registerUser(){
+  var u={name:$g('f-name').value.trim(),phone:$g('f-phone').value.trim(),address:$g('f-addr').value.trim()};
+  try{localStorage.setItem('snl_user',JSON.stringify(u))}catch(e){}
+  api('register',u);
+  go('course');
+}
+function restoreSession(){
+  var u=getUser(); if(!u||!u.phone) return;
+  $g('f-name').value=u.name||''; $g('f-phone').value=u.phone||''; $g('f-addr').value=u.address||'';
+  $g('f-agree').checked=true; checkForm();
+  var st=null; try{st=JSON.parse(localStorage.getItem('snl_state'))}catch(e){}
+  if(st&&st.board&&st.board.length===9){
+    mode=st.mode||'free'; board=st.board; stamped=st.stamped||stamped;
+    doneLines=st.doneLines||[]; tickets=st.tickets||0;
+    render(); go('bingo');
+    toast(u.name+'님, 이어서 진행하세요! 🍀');
+  }else{
+    go('course');
+  }
 }
 
 /* ═══ 렌더 ═══ */
@@ -501,14 +530,18 @@ function openStore(key, idx){
 /* ═══ 스탬프 & 빙고 판정 ═══ */
 function stamp(idx){
   stamped[idx]=true; clickSound();
+  var u=getUser();
+  if(u&&u.phone) api('event',{phone:u.phone,type:'stamp',store:STORES[board[idx]].name});
   var newly=0;
   LINES.forEach(function(line,li){
     if(doneLines.indexOf(li)<0 && line.every(function(i){return stamped[i];})){
       doneLines.push(li); newly++;
     }
   });
-  render();
+  render(); saveState();
   if(newly>0){
+    if(u&&u.phone) api('event',{phone:u.phone,type:'bingo_line',detail:newly});
+    if(u&&u.phone&&stamped.every(function(v){return v;})) api('event',{phone:u.phone,type:'bingo_all'});
     pendingTickets=Math.min(newly, 8-tickets);
     if(pendingTickets<=0){toast("응모권은 최대 8장까지 지급돼요!");return;}
     var all=stamped.every(Boolean);
@@ -527,8 +560,10 @@ function showTicket(n,all){
 }
 function submitTicket(){
   clickSound();
+  var u=getUser();
+  if(u&&u.phone&&pendingTickets>0) api('event',{phone:u.phone,type:'ticket',detail:pendingTickets});
   tickets+=pendingTickets; pendingTickets=0;
-  hideEl("ticket-dim"); render();
+  hideEl("ticket-dim"); render(); saveState();
   /* PDF 플로우: 접수 안내 → 3·2·1 카운트다운 → 게임 복귀 */
   $("ld-stage1").style.display="block"; $("ld-stage2").style.display="none";
   showEl("done-dim");
@@ -568,6 +603,7 @@ function clickSound(){ /* 클리커 사운드 효과 */
   }catch(e){}
 }
 render();
+restoreSession();
 </script>
 </body>
 </html>

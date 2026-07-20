@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>샵앤링크 관리자</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{--magenta:#A62C96;--magenta-dark:#7A1E6C;--pink:#F6DFF3;--pink-soft:#FBF1FA;--ink:#241B22;--gray:#8B7F89;--line:#EBDDE9;--paper:#FFFFFF;--bg:#F7F3F6;--green:#3E8E4F;--red:#C0392B}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+.btn{padding:12px 18px;border:none;border-radius:10px;background:var(--magenta);color:#fff;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:#fff;color:var(--magenta);border:1.5px solid var(--magenta)}
+
+/* 로그인 */
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:linear-gradient(160deg,#C445B2,#6E1B61)}
+.login-card{width:100%;max-width:360px;background:#fff;border-radius:20px;padding:34px 28px;box-shadow:0 20px 60px rgba(40,5,35,.35)}
+.login-card h1{font-size:22px;font-weight:900;text-align:center}
+.login-card .sub{font-size:13px;color:var(--gray);text-align:center;margin:8px 0 24px}
+.login-card input{width:100%;padding:14px 16px;border:1.5px solid var(--line);border-radius:11px;font-size:15px;font-family:inherit;margin-bottom:12px}
+.login-card input:focus{outline:none;border-color:var(--magenta)}
+.login-card .btn{width:100%;padding:14px}
+.login-err{color:var(--red);font-size:12.5px;text-align:center;margin-top:10px;display:none;font-weight:600}
+
+/* 대시보드 */
+#dash{display:none}
+.topbar{background:#fff;border-bottom:1px solid var(--line);padding:14px 22px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:10}
+.topbar h1{font-size:17px;font-weight:900}
+.topbar .live{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--green);font-weight:700}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:blink 1.6s infinite}
+@keyframes blink{50%{opacity:.25}}
+.topbar .sp{flex:1}
+.topbar .upd{font-size:11.5px;color:var(--gray)}
+.wrap{max-width:1100px;margin:0 auto;padding:22px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+.stat .l{font-size:12px;color:var(--gray);font-weight:600}
+.stat .v{font-size:26px;font-weight:900;color:var(--magenta-dark);margin-top:4px}
+.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tab{padding:9px 16px;border-radius:20px;font-size:13.5px;font-weight:700;cursor:pointer;background:#fff;border:1.5px solid var(--line);color:var(--gray)}
+.tab.on{background:var(--magenta);border-color:var(--magenta);color:#fff}
+.search{margin-left:auto;padding:9px 14px;border:1.5px solid var(--line);border-radius:20px;font-size:13px;font-family:inherit;width:220px}
+.search:focus{outline:none;border-color:var(--magenta)}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:var(--pink-soft);color:var(--magenta-dark);font-weight:800;text-align:left;padding:11px 14px;font-size:12px;white-space:nowrap}
+td{padding:11px 14px;border-top:1px solid #F4EDF3;white-space:nowrap}
+tr:hover td{background:#FDF8FC}
+.badge{display:inline-block;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:800}
+.b-register{background:#E8F0FE;color:#1A56DB}
+.b-stamp{background:var(--pink);color:var(--magenta)}
+.b-bingo_line{background:#FFF3D0;color:#8a6100}
+.b-ticket{background:#E3F1E5;color:var(--green)}
+.b-bingo_all{background:#FCE1DC;color:var(--red)}
+.empty{padding:40px;text-align:center;color:var(--gray);font-size:13.5px}
+.tbl-scroll{overflow-x:auto}
+@media(max-width:640px){.wrap{padding:14px}.search{width:130px}}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <div class="login-card">
+    <h1>🔐 샵앤링크 관리자</h1>
+    <p class="sub">관리자 키를 입력하세요</p>
+    <input type="password" id="key" placeholder="관리자 키" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="btn" onclick="doLogin()">로그인</button>
+    <p class="login-err" id="err">키가 올바르지 않습니다.</p>
+  </div>
+</div>
+
+<div id="dash">
+  <div class="topbar">
+    <h1>샵앤링크 대시보드</h1>
+    <span class="live"><span class="live-dot"></span>실시간</span>
+    <span class="sp"></span>
+    <span class="upd" id="upd">—</span>
+    <button class="btn ghost" style="padding:8px 14px;font-size:12.5px" onclick="load()">새로고침</button>
+    <button class="btn ghost" style="padding:8px 14px;font-size:12.5px" onclick="logout()">로그아웃</button>
+  </div>
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat"><div class="l">총 참여자</div><div class="v" id="s-users">0</div></div>
+      <div class="stat"><div class="l">오늘 신규</div><div class="v" id="s-today">0</div></div>
+      <div class="stat"><div class="l">총 스탬프</div><div class="v" id="s-stamps">0</div></div>
+      <div class="stat"><div class="l">발급 응모권</div><div class="v" id="s-tickets">0</div></div>
+      <div class="stat"><div class="l">빙고 전체완성</div><div class="v" id="s-allclear">0</div></div>
+    </div>
+    <div class="tabs">
+      <div class="tab on" id="tab-users" onclick="setTab('users')">참여자</div>
+      <div class="tab" id="tab-events" onclick="setTab('events')">이용기록</div>
+      <input class="search" id="q" placeholder="이름/전화번호 검색" oninput="renderTables()">
+    </div>
+    <div class="card tbl-scroll" id="pane-users">
+      <table><thead><tr><th>이름</th><th>전화번호</th><th>주소</th><th>스탬프</th><th>빙고 줄</th><th>응모권</th><th>가입일시</th><th>최근 이용</th></tr></thead><tbody id="tb-users"></tbody></table>
+      <div class="empty" id="em-users" style="display:none">참여자가 없습니다.</div>
+    </div>
+    <div class="card tbl-scroll" id="pane-events" style="display:none">
+      <table><thead><tr><th>시간</th><th>이름</th><th>전화번호</th><th>유형</th><th>매장</th><th>상세</th></tr></thead><tbody id="tb-events"></tbody></table>
+      <div class="empty" id="em-events" style="display:none">이용기록이 없습니다.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+var DATA={users:[],events:[],totals:{}};
+var TYPE_LABEL={register:'등록',stamp:'스탬프',bingo_line:'빙고 완성',ticket:'응모권',bingo_all:'전체 완성'};
+var timer=null;
+
+function getKey(){return sessionStorage.getItem('snl_admin_key')||'';}
+function $g(id){return document.getElementById(id);}
+
+async function doLogin(){
+  var key=$g('key').value.trim();
+  if(!key) return;
+  var r=await fetch('/api/admin/login',{headers:{'x-admin-key':key}});
+  if(r.ok){
+    sessionStorage.setItem('snl_admin_key',key);
+    showDash();
+  }else{
+    $g('err').style.display='block';
+  }
+}
+function logout(){
+  sessionStorage.removeItem('snl_admin_key');
+  clearInterval(timer);
+  $g('dash').style.display='none';
+  $g('login').style.display='flex';
+}
+function showDash(){
+  $g('login').style.display='none';
+  $g('dash').style.display='block';
+  load();
+  clearInterval(timer);
+  timer=setInterval(load,10000); // 10초마다 실시간 갱신
+}
+async function load(){
+  var r=await fetch('/api/admin/data',{headers:{'x-admin-key':getKey()}});
+  if(r.status===401){logout();return;}
+  DATA=await r.json();
+  var t=DATA.totals||{};
+  $g('s-users').textContent=t.total_users||0;
+  $g('s-today').textContent=t.today_users||0;
+  $g('s-stamps').textContent=t.total_stamps||0;
+  $g('s-tickets').textContent=t.total_tickets||0;
+  $g('s-allclear').textContent=t.total_allclear||0;
+  $g('upd').textContent='업데이트: '+new Date().toLocaleTimeString('ko-KR');
+  renderTables();
+}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function match(u,q){return !q||((u.name||'')+(u.phone||'')).toLowerCase().indexOf(q)>=0;}
+function renderTables(){
+  var q=$g('q').value.trim().toLowerCase();
+  var us=DATA.users.filter(function(u){return match(u,q);});
+  $g('tb-users').innerHTML=us.map(function(u){
+    return '<tr><td><b>'+esc(u.name)+'</b></td><td>'+esc(u.phone)+'</td><td>'+esc(u.address)+'</td><td>'+u.stamps+'/9</td><td>'+u.bingo_lines+'</td><td>'+u.tickets+'장</td><td>'+esc(u.created_at)+'</td><td>'+esc(u.last_seen)+'</td></tr>';
+  }).join('');
+  $g('em-users').style.display=us.length?'none':'block';
+  var ev=DATA.events.filter(function(e){return match({name:e.name,phone:e.phone},q);});
+  $g('tb-events').innerHTML=ev.map(function(e){
+    var lb=TYPE_LABEL[e.type]||e.type;
+    return '<tr><td>'+esc(e.created_at)+'</td><td>'+esc(e.name||'-')+'</td><td>'+esc(e.phone)+'</td><td><span class="badge b-'+esc(e.type)+'">'+esc(lb)+'</span></td><td>'+esc(e.store||'-')+'</td><td>'+esc(e.detail||'-')+'</td></tr>';
+  }).join('');
+  $g('em-events').style.display=ev.length?'none':'block';
+}
+function setTab(t){
+  $g('tab-users').classList.toggle('on',t==='users');
+  $g('tab-events').classList.toggle('on',t==='events');
+  $g('pane-users').style.display=t==='users'?'block':'none';
+  $g('pane-events').style.display=t==='events'?'block':'none';
+}
+// 세션에 키가 있으면 자동 로그인
+if(getKey()){
+  fetch('/api/admin/login',{headers:{'x-admin-key':getKey()}}).then(function(r){
+    if(r.ok) showDash(); else sessionStorage.removeItem('snl_admin_key');
+  });
+}
+</script>
+</body>
+</html>
