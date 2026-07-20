@@ -425,15 +425,15 @@ function api(path,data){
   try{fetch('/api/'+path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(data)}).catch(function(){});}catch(e){}
 }
 function registerUser(){
-  var u={name:$g('f-name').value.trim(),phone:$g('f-phone').value.trim(),address:$g('f-addr').value.trim()};
+  var u={name:$('f-name').value.trim(),phone:$('f-phone').value.trim(),address:$('f-addr').value.trim()};
   try{localStorage.setItem('snl_user',JSON.stringify(u))}catch(e){}
   api('register',u);
   go('course');
 }
 function restoreSession(){
   var u=getUser(); if(!u||!u.phone) return;
-  $g('f-name').value=u.name||''; $g('f-phone').value=u.phone||''; $g('f-addr').value=u.address||'';
-  $g('f-agree').checked=true; checkForm();
+  $('f-name').value=u.name||''; $('f-phone').value=u.phone||''; $('f-addr').value=u.address||'';
+  $('f-agree').checked=true; checkForm();
   var st=null; try{st=JSON.parse(localStorage.getItem('snl_state'))}catch(e){}
   if(st&&st.board&&st.board.length===9){
     mode=st.mode||'free'; board=st.board; stamped=st.stamped||stamped;
