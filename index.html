@@ -208,6 +208,70 @@ body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;backg
 .confetti{position:fixed;top:-14px;z-index:80;animation:fall linear forwards;pointer-events:none}
 @keyframes fall{to{transform:translateY(112vh) rotate(720deg)}}
 .proto-tag{position:fixed;top:10px;right:10px;z-index:95;background:rgba(36,27,34,.7);color:#fff;font-size:10px;padding:4px 9px;border-radius:12px;letter-spacing:.6px}
+
+/* ═══ 시크릿 배너 (메인) ═══ */
+.secret-banner{margin:22px auto 0;max-width:330px;background:linear-gradient(90deg,#FFE270,#FFC93C);color:#5C4300;font-weight:900;font-size:14px;border-radius:30px;padding:12px 18px;box-shadow:0 6px 18px rgba(0,0,0,.25);animation:pulseB 1.8s ease-in-out infinite}
+@keyframes pulseB{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+/* 주소 안내 */
+.addr-note{font-size:11.5px;color:#B0532F;background:#FFF3ED;border:1px solid #F5DACB;border-radius:10px;padding:10px 12px;line-height:1.65;margin:-6px 0 16px}
+/* ═══ 진행상황 저장 안내 ═══ */
+.save-wrap{padding:26px 24px 40px;flex:1;display:flex;flex-direction:column;justify-content:center}
+.save-card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:28px 20px;text-align:center;margin-bottom:14px;box-shadow:0 2px 10px rgba(120,40,110,.05)}
+.save-card .icon{font-size:48px;display:inline-block;animation:sway 2s ease-in-out infinite}
+.save-card h3{font-size:18px;font-weight:900;margin:12px 0 10px}
+.save-card p{font-size:13.5px;color:#54474F;line-height:1.75}
+.save-card p b{color:var(--magenta)}
+.save-warn{background:#FFF6DE;border:1px solid #F5E2AC;border-radius:14px;padding:14px 16px;font-size:12px;color:#7A5C15;line-height:1.7;margin-bottom:22px}
+.save-warn b{color:#8a6100}
+/* ═══ 카톡 문의 플로팅 ═══ */
+#kakao-btn{position:fixed;right:14px;bottom:18px;z-index:45;background:#FEE500;color:#191919;border-radius:24px;padding:11px 15px;font-size:12.5px;font-weight:800;text-decoration:none;box-shadow:0 6px 16px rgba(0,0,0,.22);display:flex;align-items:center;gap:5px}
+#kakao-btn:active{transform:scale(.95)}
+/* ═══ 멀티 티켓 스택 ═══ */
+.tk-stack{position:relative}
+.tk-ghost{position:absolute;left:10px;right:10px;top:-8px;height:40px;background:#F0E4C8;border-radius:16px;z-index:-1;display:none}
+.tk-ghost.g2{left:20px;right:20px;top:-15px;background:#E6D8B4}
+.tk-count-label{font-size:12.5px;font-weight:800;color:var(--magenta-dark);background:var(--pink);border-radius:20px;display:inline-block;padding:5px 13px;margin-bottom:8px}
+/* ═══ 시크릿 경품 ═══ */
+.gift-card{background:#fff;border-radius:20px;padding:30px 24px;text-align:center;box-shadow:0 16px 44px rgba(0,0,0,.3)}
+.gift-card h3{font-size:21px;font-weight:900;color:var(--magenta-dark)}
+.gift-box{font-size:76px;display:inline-block;margin:16px 0 8px;cursor:pointer;animation:giftShake 1.1s infinite}
+@keyframes giftShake{0%,100%{transform:rotate(0)}20%{transform:rotate(-8deg) scale(1.06)}40%{transform:rotate(8deg)}60%{transform:rotate(-5deg)}80%{transform:rotate(5deg)}}
+.gift-card .click-hint{font-size:13px;color:var(--gray);font-weight:800;letter-spacing:2px}
+.keycap-msg h3{font-size:21px;font-weight:900;color:var(--magenta)}
+.keycap-msg p{font-size:13.5px;color:#54474F;line-height:1.75;margin-top:10px}
+.keycap-msg p b{color:var(--magenta-dark)}
+.keycap-msg .kc{font-size:54px;margin:12px 0 2px}
+.keycap-msg .ship{font-size:11.5px;color:var(--gray);background:var(--pink-soft);border-radius:10px;padding:11px;margin:14px 0 16px;line-height:1.65}
+/* ═══ 모바일 반응형 보정 (기기별 비율·크기 대응) ═══ */
+html,body{overflow-x:hidden;width:100%}
+.screen{min-height:100svh}
+@supports(min-height:100dvh){.screen{min-height:100dvh}}
+.hero h1{font-size:clamp(34px,11vw,46px)}
+.hero .sub{font-size:clamp(13.5px,4vw,15.5px)}
+.hero .info{flex-wrap:wrap}
+.kv{max-width:70vw}
+.secret-banner{max-width:calc(100% - 40px);font-size:clamp(12px,3.6vw,14px)}
+.ov-card{max-width:min(330px,calc(100vw - 40px))}
+.sheet{max-height:min(88vh,88dvh)}
+.cell{min-width:0}
+.cell .inner{min-width:0}
+.board{width:100%}
+.coupon .ben{font-size:clamp(24px,7.5vw,30px)}
+.prizes{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+@media(max-width:390px){
+  .bingo-wrap{padding:12px 12px 60px}
+  .board-frame{padding:9px;border-radius:18px}
+  .board{gap:6px}
+  .cell{border-radius:11px;padding:5px;box-shadow:inset 0 0 0 3px #fff, inset 0 0 0 4px #F1E5EF}
+  .cell .cemo{font-size:23px}
+  .cell .cname{font-size:8.5px}
+  .cell .chk{width:15px;height:15px;font-size:8px}
+  .hero h1{font-size:38px}
+  .hero{padding:50px 18px 26px}
+  .progress{gap:6px}
+  .pbox{padding:9px}
+  .pbox .pv{font-size:14px}
+}
 </style>
 </head>
 <body>
@@ -226,6 +290,7 @@ body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;backg
       <span class="spark" style="top:-4px;left:64px">✨</span>
       <span class="spark" style="bottom:-4px;right:66px">🍀</span>
     </div>
+    <div class="secret-banner">🎁 한 줄만 완성해도 숨겨진 시크릿 경품 OPEN!</div>
     <div class="info">
       <div class="chip"><b>진행 일정</b>2026.08.10 – 09.11</div>
       <div class="chip"><b>진행 구역</b>샤로수길 전구역</div>
@@ -266,9 +331,24 @@ body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;backg
     <p class="lead">빙고 완성 시 <b>경품 자동 응모 및 당첨자 안내</b>를 위해 최소한의 개인정보를 수집합니다. 수집된 정보는 본 이벤트 운영 및 경품 지급 목적으로만 사용되며, 이벤트 종료 후 정해진 기간 내 안전하게 폐기됩니다.</p>
     <label class="consent" id="consent-row"><input type="checkbox" id="f-agree" onchange="checkForm()"><span>개인정보 수집 및 이용에 동의합니다 <i style="font-style:normal;color:var(--magenta);font-weight:800">(필수)</i></span></label>
     <div class="field"><label>이름 <i>*</i></label><input id="f-name" placeholder="이름을 입력해주세요" oninput="checkForm()"></div>
-    <div class="field"><label>전화번호 <i>*</i></label><input id="f-phone" inputmode="tel" placeholder="010-0000-0000" oninput="checkForm()"></div>
+    <div class="field"><label>전화번호 <i>*</i></label><input id="f-phone" inputmode="numeric" placeholder="010-0000-0000" maxlength="13" oninput="formatPhone(this);checkForm()"></div>
     <div class="field"><label>주소 <i>*</i></label><input id="f-addr" placeholder="경품 수령 주소를 입력해주세요" oninput="checkForm()"></div>
+    <p class="addr-note">* 경품은 주 1회 일괄 발송되며, 원활한 배송을 위해 정확한 주소를 입력해 주세요. 주소를 잘못 입력한 경우에는 경품 재발송이 불가합니다.</p>
     <button class="btn" id="btn-start" disabled onclick="registerUser()" style="margin-top:8px">빙고 게임 시작하기</button>
+  </div>
+</section>
+
+<!-- ═══ 2.5 진행상황 저장 안내 ═══ -->
+<section class="screen" id="saveinfo">
+  <div class="hdr"><div class="hdr-row"><button class="back" onclick="go('privacy')">←</button><div class="titles"><h2>진행 상황 저장 안내</h2></div><div style="width:34px"></div></div></div>
+  <div class="save-wrap">
+    <div class="save-card">
+      <span class="icon">📲</span>
+      <h3>진행 상황이 자동으로 저장돼요</h3>
+      <p>현재 사용 중인 기기에 빙고 진행 상황이<br>자동으로 저장됩니다.<br><b>같은 기기와 브라우저</b>로 다시 접속하면<br>이어서 참여할 수 있습니다.</p>
+    </div>
+    <div class="save-warn">⚠️ 브라우저 기록을 삭제하거나 <b>다른 기기·브라우저로 접속</b>할 경우 진행 상황을 불러올 수 없습니다. 이 경우 카카오톡 문의채널을 통해 복구를 요청해주세요.</div>
+    <button class="btn" onclick="go('course')">빙고 게임 시작하기</button>
   </div>
 </section>
 
@@ -280,7 +360,7 @@ body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;backg
     <div class="course" onclick="startBingo('solo')"><span class="tag">큐레이션 코스</span><h3>🍚 혼자라도 괜찮은 하루</h3><p>혼자여서 더 완벽한 하루, 눈치 볼 것 없이 즐기는 코스</p><div class="route">혼밥 식당 → 카페 → 코인노래방</div></div>
     <div class="course" onclick="startBingo('quit')"><span class="tag">큐레이션 코스</span><h3>🔥 오늘 퇴사하고 싶은 사람</h3><p>매운맛으로 스트레스 리셋, 시원하게 마무리하는 코스</p><div class="route">매운 음식 → 맥주 한잔 → 노래방</div></div>
     <div class="course" onclick="startBingo('date')"><span class="tag">큐레이션 코스</span><h3>💛 데이트 어디가지?</h3><p>고민은 그만, 걷기만 해도 코스가 완성되는 데이트</p><div class="route">이국적인 음식 → 카페 → 소품샵</div></div>
-    <div class="course free" onclick="startBingo('free')"><span class="tag">자율 선택</span><h3>🧩 내 맘대로 빙고판 채우기</h3><p>참여 업체 리스트에서 원하는 9곳을 골라 원하는 칸에 배치해요</p></div>
+    <div class="course free" style="display:none" onclick="startBingo('free')"><span class="tag">자율 선택</span><h3>🧩 내 맘대로 빙고판 채우기</h3><p>참여 업체 리스트에서 원하는 9곳을 골라 원하는 칸에 배치해요</p></div>
   </div>
 </section>
 
@@ -327,13 +407,37 @@ body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;backg
   </div>
 </div>
 
-<!-- 럭키티켓 오버레이 -->
+<!-- 럭키티켓 오버레이 (다량 생성 시 한 장씩 응모) -->
 <div class="overlay" id="ticket-dim">
-  <div class="ov-card"><div class="lticket">
+  <div class="ov-card"><div class="tk-stack">
+    <div class="tk-ghost g2" id="tk-g2"></div>
+    <div class="tk-ghost" id="tk-g1"></div>
+    <div class="lticket">
     <div class="lt-top" id="tk-title">빙고 한 줄 완성! 🎉</div>
+    <div class="tk-count-label" id="tk-label">남은 응모권 1장</div>
     <div class="tk-visual"><div class="dots"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="lt">LUCKY TICKET</div><div class="ln" id="tk-num">× 1</div></div>
     <p class="small">※ '응모하기' 버튼 클릭 시 자동 응모되며, 행사 종료 후 추첨을 통해<br>당첨자에게 개별 안내가 진행될 예정입니다.</p>
     <button class="btn" onclick="submitTicket()">응모하기</button>
+  </div></div></div>
+</div>
+
+<!-- 시크릿 경품 도착 -->
+<div class="overlay" id="gift-dim">
+  <div class="ov-card"><div class="gift-card">
+    <h3>시크릿 경품 도착!</h3>
+    <div class="gift-box" onclick="openGift()">🎁</div>
+    <div class="click-hint">CLICK!</div>
+  </div></div>
+</div>
+
+<!-- 시크릿 경품 = 실물 키캡 안내 -->
+<div class="overlay" id="keycap-dim">
+  <div class="ov-card"><div class="gift-card keycap-msg">
+    <h3>축하합니다! 🎉</h3>
+    <div class="kc">⌨️</div>
+    <p><b id="kc-lines">완성한 빙고 한 줄이</b><br><b>실물 키캡</b>으로 전환되었습니다!</p>
+    <div class="ship">* 경품은 입력하신 배송지로 순차 발송됩니다<br>(주 1회 일괄 발송)</div>
+    <button class="btn" onclick="hideEl('keycap-dim')">확인</button>
   </div></div>
 </div>
 
@@ -356,6 +460,8 @@ body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;backg
     <div class="gen-msg">럭키드로우 응모권 생성중<span class="gdots"></span></div>
   </div></div>
 </div>
+
+<a id="kakao-btn" href="https://kakaobusiness.gitbook.io/main" target="_blank" rel="noopener">💬 카톡 문의</a>
 
 <div id="toast"></div>
 
@@ -386,7 +492,7 @@ var LINES=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 /* ═══ 상태 ═══ */
 var board=[null,null,null,null,null,null,null,null,null];
 var stamped=[false,false,false,false,false,false,false,false,false];
-var doneLines=[], tickets=0, pendingTickets=0, mode="free", pickTarget=null;
+var doneLines=[], tickets=0, pendingTickets=0, mode="free", pickTarget=null, batchLines=0;
 
 function $(id){return document.getElementById(id);}
 function go(id){
@@ -400,14 +506,33 @@ function toast(msg){
   var t=$("toast"); t.textContent=msg; t.style.display="block";
   clearTimeout(t._h); t._h=setTimeout(function(){t.style.display="none";},2200);
 }
+/* 전화번호 자동 하이픈 (숫자만 입력해도 000-0000-0000 형식으로) */
+function formatPhone(el){
+  var d=el.value.replace(/\D/g,"").slice(0,11);
+  var out=d;
+  if(d.length>7) out=d.slice(0,3)+"-"+d.slice(3,d.length-4)+"-"+d.slice(-4);
+  else if(d.length>3) out=d.slice(0,3)+"-"+d.slice(3);
+  el.value=out;
+}
 function checkForm(){
-  var ok=$("f-name").value.trim()&&$("f-phone").value.trim()&&$("f-addr").value.trim()&&$("f-agree").checked;
+  var phoneDigits=$("f-phone").value.replace(/\D/g,"");
+  var ok=$("f-name").value.trim()&&phoneDigits.length>=10&&$("f-addr").value.trim()&&$("f-agree").checked;
   $("btn-start").disabled=!ok;
   $("consent-row").classList.toggle("on",$("f-agree").checked);
 }
 
 /* ═══ 게임 시작 ═══ */
 function startBingo(m){
+  // 진행 중인 빙고가 있으면 초기화 여부 확인 (뒤로가기 후 재선택 보호)
+  var st=null; try{st=JSON.parse(localStorage.getItem('snl_state'))}catch(e){}
+  if(st&&st.stamped&&st.stamped.some(function(v){return v;})){
+    if(!confirm("진행 중인 빙고가 있어요!\n새 코스로 시작하면 기존 진행 상황이 초기화됩니다.\n\n[확인] 새로 시작  /  [취소] 이어하기")){
+      mode=st.mode||'solo'; board=st.board; stamped=st.stamped;
+      doneLines=st.doneLines||[]; tickets=st.tickets||0;
+      render(); go('bingo'); toast("이어서 진행합니다! 🍀");
+      return;
+    }
+  }
   mode=m;
   stamped=[false,false,false,false,false,false,false,false,false];
   doneLines=[]; tickets=0;
@@ -428,7 +553,7 @@ function registerUser(){
   var u={name:$('f-name').value.trim(),phone:$('f-phone').value.trim(),address:$('f-addr').value.trim()};
   try{localStorage.setItem('snl_user',JSON.stringify(u))}catch(e){}
   api('register',u);
-  go('course');
+  go('saveinfo');
 }
 function restoreSession(){
   var u=getUser(); if(!u||!u.phone) return;
@@ -543,39 +668,60 @@ function stamp(idx){
     if(u&&u.phone) api('event',{phone:u.phone,type:'bingo_line',detail:newly});
     if(u&&u.phone&&stamped.every(function(v){return v;})) api('event',{phone:u.phone,type:'bingo_all'});
     pendingTickets=Math.min(newly, 8-tickets);
+    batchLines=newly;
     if(pendingTickets<=0){toast("응모권은 최대 8장까지 지급돼요!");return;}
     var all=stamped.every(Boolean);
     setTimeout(function(){
       if(all){
         confetti(); showEl("allclear-dim");
-        setTimeout(function(){ hideEl("allclear-dim"); showTicket(newly,true); },2200);
-      }else showTicket(newly,false);
+        setTimeout(function(){ hideEl("allclear-dim"); showTicket(); },2200);
+      }else showTicket();
     },550);
   }else toast("스탬프 획득! ✓");
 }
-function showTicket(n,all){
-  $("tk-title").textContent = all ? "모든 빙고 완성! 🏆" : (n>1 ? "빙고 "+n+"줄 동시 완성! 🎉" : "빙고 한 줄 완성! 🎉");
-  $("tk-num").textContent="× "+pendingTickets;
+/* 응모권 한 장씩 응모하는 연출 (다량 생성 시 스택으로 표시) */
+function showTicket(){
+  var n=pendingTickets;
+  $("tk-title").textContent = n>1 ? "응모권 "+n+"장 도착! 🎉" : (batchLines>1 ? "응모권 도착! 🎉" : "빙고 한 줄 완성! 🎉");
+  $("tk-label").textContent = "남은 응모권 "+n+"장";
+  $("tk-num").textContent = "× 1";
+  $("tk-g1").style.display = n>1 ? "block" : "none";
+  $("tk-g2").style.display = n>2 ? "block" : "none";
   confetti(); showEl("ticket-dim");
 }
 function submitTicket(){
   clickSound();
   var u=getUser();
-  if(u&&u.phone&&pendingTickets>0) api('event',{phone:u.phone,type:'ticket',detail:pendingTickets});
-  tickets+=pendingTickets; pendingTickets=0;
+  if(u&&u.phone) api('event',{phone:u.phone,type:'ticket',detail:1});
+  tickets+=1; pendingTickets-=1;
   hideEl("ticket-dim"); render(); saveState();
-  /* PDF 플로우: 접수 안내 → 3·2·1 카운트다운 → 게임 복귀 */
   $("ld-stage1").style.display="block"; $("ld-stage2").style.display="none";
   showEl("done-dim");
-  setTimeout(function(){
-    $("ld-stage1").style.display="none"; $("ld-stage2").style.display="block";
-    var n=3; $("cd-num").textContent=n;
-    var iv=setInterval(function(){
-      n--;
-      if(n<=0){clearInterval(iv);hideEl("done-dim");}
-      else $("cd-num").textContent=n;
-    },800);
-  },1300);
+  if(pendingTickets>0){
+    /* 다음 응모권으로 — 접수 연출 짧게 후 이어서 응모 */
+    setTimeout(function(){ hideEl("done-dim"); showTicket(); },1100);
+  }else{
+    /* 마지막 응모권 → 3·2·1 카운트다운 → 시크릿 경품 */
+    setTimeout(function(){
+      $("ld-stage1").style.display="none"; $("ld-stage2").style.display="block";
+      var n=3; $("cd-num").textContent=n;
+      var iv=setInterval(function(){
+        n--;
+        if(n<=0){clearInterval(iv);hideEl("done-dim");showGift();}
+        else $("cd-num").textContent=n;
+      },800);
+    },1300);
+  }
+}
+/* ═══ 시크릿 경품 (실물 키캡) ═══ */
+function showGift(){ showEl("gift-dim"); }
+function openGift(){
+  clickSound(); confetti();
+  hideEl("gift-dim");
+  $("kc-lines").textContent = batchLines>1 ? "완성한 빙고 "+batchLines+"줄이" : "완성한 빙고 한 줄이";
+  var u=getUser();
+  if(u&&u.phone) api('event',{phone:u.phone,type:'keycap',detail:batchLines});
+  showEl("keycap-dim");
 }
 
 /* ═══ 이펙트 ═══ */

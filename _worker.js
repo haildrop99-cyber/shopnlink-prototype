@@ -57,6 +57,24 @@ async function handleApi(request, env, url) {
 
     if (p === '/api/admin/login') return json({ ok: true });
 
+    // 참여자 정보 수정
+    if (p === '/api/admin/user/update' && request.method === 'POST') {
+      const { phone, name, address } = await request.json();
+      if (!phone) return json({ error: 'phone required' }, 400);
+      await env.DB.prepare(`UPDATE users SET name = ?2, address = ?3 WHERE phone = ?1`)
+        .bind(phone, name || '', address || '').run();
+      return json({ ok: true });
+    }
+
+    // 참여자 삭제 (이용기록 포함)
+    if (p === '/api/admin/user/delete' && request.method === 'POST') {
+      const { phone } = await request.json();
+      if (!phone) return json({ error: 'phone required' }, 400);
+      await env.DB.prepare(`DELETE FROM events WHERE phone = ?1`).bind(phone).run();
+      await env.DB.prepare(`DELETE FROM users WHERE phone = ?1`).bind(phone).run();
+      return json({ ok: true });
+    }
+
     if (p === '/api/admin/data') {
       const users = await env.DB.prepare(
         `SELECT u.phone, u.name, u.address, u.created_at, u.last_seen,
