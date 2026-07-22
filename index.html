@@ -492,7 +492,7 @@ var LINES=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 /* ═══ 상태 ═══ */
 var board=[null,null,null,null,null,null,null,null,null];
 var stamped=[false,false,false,false,false,false,false,false,false];
-var doneLines=[], tickets=0, pendingTickets=0, mode="free", pickTarget=null, batchLines=0;
+var doneLines=[], tickets=0, pendingTickets=0, mode="free", pickTarget=null, batchLines=0, keycapGiven=false;
 
 function $(id){return document.getElementById(id);}
 function go(id){
@@ -544,7 +544,7 @@ function startBingo(m){
 /* ═══ 저장/복원 & 서버 연동 ═══ */
 function getUser(){try{return JSON.parse(localStorage.getItem('snl_user'))}catch(e){return null}}
 function saveState(){
-  try{localStorage.setItem('snl_state',JSON.stringify({mode:mode,board:board,stamped:stamped,doneLines:doneLines,tickets:tickets}))}catch(e){}
+  try{localStorage.setItem('snl_state',JSON.stringify({mode:mode,board:board,stamped:stamped,doneLines:doneLines,tickets:tickets,keycapGiven:keycapGiven}))}catch(e){}
 }
 function api(path,data){
   try{fetch('/api/'+path,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(data)}).catch(function(){});}catch(e){}
@@ -562,7 +562,7 @@ function restoreSession(){
   var st=null; try{st=JSON.parse(localStorage.getItem('snl_state'))}catch(e){}
   if(st&&st.board&&st.board.length===9){
     mode=st.mode||'free'; board=st.board; stamped=st.stamped||stamped;
-    doneLines=st.doneLines||[]; tickets=st.tickets||0;
+    doneLines=st.doneLines||[]; tickets=st.tickets||0; keycapGiven=!!st.keycapGiven;
     render(); go('bingo');
     toast(u.name+'님, 이어서 진행하세요! 🍀');
   }else{
@@ -707,20 +707,24 @@ function submitTicket(){
       var n=3; $("cd-num").textContent=n;
       var iv=setInterval(function(){
         n--;
-        if(n<=0){clearInterval(iv);hideEl("done-dim");showGift();}
+        if(n<=0){
+          clearInterval(iv); hideEl("done-dim");
+          if(!keycapGiven) showGift(); // 시크릿 경품(키캡)은 최초 1회만
+        }
         else $("cd-num").textContent=n;
       },800);
     },1300);
   }
 }
-/* ═══ 시크릿 경품 (실물 키캡) ═══ */
+/* ═══ 시크릿 경품 (실물 키캡) — 최초 빙고 완성 시 1회만 지급 ═══ */
 function showGift(){ showEl("gift-dim"); }
 function openGift(){
   clickSound(); confetti();
   hideEl("gift-dim");
-  $("kc-lines").textContent = batchLines>1 ? "완성한 빙고 "+batchLines+"줄이" : "완성한 빙고 한 줄이";
+  $("kc-lines").textContent = "완성한 빙고 한 줄이";
+  keycapGiven=true; saveState();
   var u=getUser();
-  if(u&&u.phone) api('event',{phone:u.phone,type:'keycap',detail:batchLines});
+  if(u&&u.phone) api('event',{phone:u.phone,type:'keycap',detail:1});
   showEl("keycap-dim");
 }
 
