@@ -185,11 +185,27 @@ async function load(){
 }
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function match(u,q){return !q||((u.name||'')+(u.phone||'')).toLowerCase().indexOf(q)>=0;}
+/* 참여자 실시간 수치 — state(빙고판 진행)가 있으면 그 값을 우선 사용 */
+function userLive(u){
+  var out={stamps:u.stamps, lines:u.bingo_lines, tickets:u.tickets};
+  try{
+    if(u.state){
+      var s=JSON.parse(u.state);
+      if(s&&s.stamped){
+        out.stamps=s.stamped.filter(Boolean).length;
+        out.lines=(s.doneLines||[]).length;
+        out.tickets=s.tickets||0;
+      }
+    }
+  }catch(e){}
+  return out;
+}
 function renderTables(){
   var q=$g('q').value.trim().toLowerCase();
   var us=DATA.users.filter(function(u){return match(u,q);});
   $g('tb-users').innerHTML=us.map(function(u){
-    return '<tr><td><b>'+esc(u.name)+'</b></td><td>'+esc(u.phone)+'</td><td>'+esc(u.address)+'</td><td>'+u.stamps+'/9</td><td>'+u.bingo_lines+'</td><td>'+u.tickets+'장</td><td>'+esc(u.created_at)+'</td><td>'+esc(u.last_seen)+'</td>'+
+    var lv=userLive(u);
+    return '<tr><td><b>'+esc(u.name)+'</b></td><td>'+esc(u.phone)+'</td><td>'+esc(u.address)+'</td><td>'+lv.stamps+'/9</td><td>'+lv.lines+'</td><td>'+lv.tickets+'장</td><td>'+esc(u.created_at)+'</td><td>'+esc(u.last_seen)+'</td>'+
       '<td><a href="#" onclick="openBoard(\''+esc(u.phone)+'\');return false" style="color:var(--magenta-dark);font-weight:700;margin-right:8px">빙고판</a>'+
       '<a href="#" onclick="editUser(\''+esc(u.phone)+'\');return false" style="color:var(--magenta);font-weight:700;margin-right:8px">수정</a>'+
       '<a href="#" onclick="delUser(\''+esc(u.phone)+'\');return false" style="color:var(--red);font-weight:700">삭제</a></td></tr>';
@@ -233,11 +249,30 @@ function renderBM(){
   });
 }
 function closeBoard(){ $g('board-modal').style.display='none'; bmPhone=null; bmState=null; }
+var BM_LINES=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 async function saveBoard(){
   if(!bmPhone||!bmState) return;
+  /* 완성 줄 전체 재계산 — 채우면 응모권 자동 추가, 지워서 줄이 깨지면 응모권도 회수 */
+  var complete=[];
+  BM_LINES.forEach(function(line,li){
+    if(line.every(function(i){return bmState.stamped[i];})) complete.push(li);
+  });
+  var oldTickets=bmState.tickets||0;
+  var oldLines=(bmState.doneLines||[]).length;
+  bmState.doneLines=complete;
+  bmState.tickets=Math.min(complete.length, 8);
+  var tDelta=bmState.tickets-oldTickets;
+  var lDelta=complete.length-oldLines;
   bmState.v=Date.now(); // 참여자 기기보다 최신으로 표시 → 자동 반영
   var r=await fetch('/api/admin/user/state',{method:'POST',headers:{'content-type':'application/json','x-admin-key':getKey()},body:JSON.stringify({phone:bmPhone,state:JSON.stringify(bmState)})});
-  if(r.ok){ closeBoard(); load(); } else alert('저장 실패: '+r.status);
+  if(r.ok){
+    /* 통계 일관성: 증감분을 이벤트로 기록 (음수 = 회수) */
+    if(lDelta!==0) fetch('/api/event',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({phone:bmPhone,type:'bingo_line',detail:lDelta})}).catch(function(){});
+    if(tDelta!==0) fetch('/api/event',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({phone:bmPhone,type:'ticket',detail:tDelta})}).catch(function(){});
+    if(tDelta>0) alert('빙고 줄 완성 → 응모권 '+tDelta+'장 자동 추가 (총 '+bmState.tickets+'장)');
+    else if(tDelta<0) alert('빙고 줄 해제 → 응모권 '+(-tDelta)+'장 회수 (총 '+bmState.tickets+'장)');
+    closeBoard(); setTimeout(load,600);
+  } else alert('저장 실패: '+r.status);
 }
 
 async function editUser(phone){
@@ -255,7 +290,7 @@ async function delUser(phone){
 }
 function downloadCSV(){
   var rows=[['이름','전화번호','주소','스탬프','빙고줄','응모권','가입일시','최근이용']];
-  DATA.users.forEach(function(u){rows.push([u.name,u.phone,u.address,u.stamps,u.bingo_lines,u.tickets,u.created_at,u.last_seen]);});
+  DATA.users.forEach(function(u){var lv=userLive(u);rows.push([u.name,u.phone,u.address,lv.stamps,lv.lines,lv.tickets,u.created_at,u.last_seen]);});
   var csv='﻿'+rows.map(function(r){return r.map(function(c){return '"'+String(c==null?'':c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
   var a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));
