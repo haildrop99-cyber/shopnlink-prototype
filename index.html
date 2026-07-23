@@ -561,7 +561,7 @@ function startBingo(m){
 /* ═══ 저장/복원 & 서버 연동 ═══ */
 function getUser(){try{return JSON.parse(localStorage.getItem('snl_user'))}catch(e){return null}}
 function saveState(){
-  var payload=JSON.stringify({mode:mode,board:board,stamped:stamped,doneLines:doneLines,tickets:tickets,keycapGiven:keycapGiven});
+  var payload=JSON.stringify({mode:mode,board:board,stamped:stamped,doneLines:doneLines,tickets:tickets,keycapGiven:keycapGiven,v:Date.now()});
   try{localStorage.setItem('snl_state',payload)}catch(e){}
   /* 서버에도 저장 (전화번호 기준) → 다른 기기에서 같은 번호로 등록 시 이어하기 */
   var u=getUser();
@@ -829,6 +829,26 @@ function clickSound(){ /* 클리커 사운드 효과 */
     o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+.12);
   }catch(e){}
 }
+/* 서버 진행상황 동기화 — 관리자 수정/다른 기기 변경분을 더 최신이면 반영 */
+function syncFromServer(){
+  var u=getUser(); if(!u||!u.phone) return;
+  fetch('/api/state/get',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({phone:u.phone})})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(!d||!d.state) return;
+    try{
+      var sv=JSON.parse(d.state);
+      var lc=null; try{lc=JSON.parse(localStorage.getItem('snl_state'))}catch(e){}
+      if(sv&&sv.board&&(!lc||(sv.v||0)>(lc.v||0))){
+        localStorage.setItem('snl_state',d.state);
+        applyState(sv);
+        if($('bingo').classList.contains('active')) toast("빙고판이 업데이트됐어요! 🔄");
+      }
+    }catch(e){}
+  }).catch(function(){});
+}
+document.addEventListener('visibilitychange',function(){ if(!document.hidden) syncFromServer(); });
+
 /* 서버에서 업체 정보(이미지·쿠폰명 등) 로드 — 관리자 페이지에서 수정한 내용 반영 */
 function loadStores(){
   fetch('/api/stores').then(function(r){return r.json();}).then(function(d){
@@ -847,6 +867,7 @@ function loadStores(){
 render();
 restoreSession();
 loadStores();
+syncFromServer();
 </script>
 </body>
 </html>

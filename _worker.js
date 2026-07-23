@@ -65,6 +65,14 @@ async function handleApi(request, env, url) {
     return json({ ok: true, state: existing && existing.state ? existing.state : null });
   }
 
+  // 진행상황 조회 (POST — 전화번호를 URL에 노출하지 않음)
+  if (p === '/api/state/get' && request.method === 'POST') {
+    const { phone } = await request.json();
+    if (!phone) return json({ error: 'phone required' }, 400);
+    const row = await env.DB.prepare(`SELECT state FROM users WHERE phone = ?1`).bind(phone).first();
+    return json({ state: row && row.state ? row.state : null });
+  }
+
   // 진행상황 서버 저장 (기기 간 이어하기용)
   if (p === '/api/state' && request.method === 'POST') {
     const { phone, state } = await request.json();
@@ -125,6 +133,15 @@ async function handleApi(request, env, url) {
       return json({ ok: true });
     }
 
+    // 참여자 빙고판(진행상황) 수정 — 고객 기기에 자동 반영
+    if (p === '/api/admin/user/state' && request.method === 'POST') {
+      const { phone, state } = await request.json();
+      if (!phone || !state) return json({ error: 'phone/state required' }, 400);
+      await env.DB.prepare(`UPDATE users SET state = ?2 WHERE phone = ?1`).bind(phone, String(state)).run();
+      await logEvent(env, phone, 'admin_edit', '', '빙고판 수정');
+      return json({ ok: true });
+    }
+
     // 참여자 삭제 (이용기록 포함)
     if (p === '/api/admin/user/delete' && request.method === 'POST') {
       const { phone } = await request.json();
@@ -136,7 +153,7 @@ async function handleApi(request, env, url) {
 
     if (p === '/api/admin/data') {
       const users = await env.DB.prepare(
-        `SELECT u.phone, u.name, u.address, u.created_at, u.last_seen,
+        `SELECT u.phone, u.name, u.address, u.created_at, u.last_seen, u.state,
            (SELECT COUNT(*) FROM events e WHERE e.phone = u.phone AND e.type = 'stamp') AS stamps,
            (SELECT COALESCE(SUM(CAST(e.detail AS INTEGER)), 0) FROM events e WHERE e.phone = u.phone AND e.type = 'ticket') AS tickets,
            (SELECT COUNT(*) FROM events e WHERE e.phone = u.phone AND e.type = 'bingo_line') AS bingo_lines

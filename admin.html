@@ -126,9 +126,21 @@ tr:hover td{background:#FDF8FC}
   </div>
 </div>
 
+<div id="board-modal" style="display:none;position:fixed;inset:0;background:rgba(30,10,28,.6);z-index:100;align-items:center;justify-content:center;padding:20px">
+  <div style="background:#fff;border-radius:16px;padding:22px;max-width:420px;width:100%">
+    <h3 style="font-size:15px;font-weight:900;margin-bottom:4px" id="bm-title">빙고판 수정</h3>
+    <p style="font-size:12px;color:var(--gray);margin-bottom:14px;line-height:1.5">칸을 눌러 채우기/지우기를 전환하세요.<br>저장하면 참여자 화면에도 자동 반영됩니다.</p>
+    <div id="bm-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px"></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn ghost" style="flex:1" onclick="closeBoard()">취소</button>
+      <button class="btn" style="flex:1" onclick="saveBoard()">저장</button>
+    </div>
+  </div>
+</div>
+
 <script>
 var DATA={users:[],events:[],totals:{}};
-var TYPE_LABEL={register:'등록',stamp:'스탬프',bingo_line:'빙고 완성',ticket:'응모권',bingo_all:'전체 완성',keycap:'키캡 전환'};
+var TYPE_LABEL={register:'등록',stamp:'스탬프',bingo_line:'빙고 완성',ticket:'응모권',bingo_all:'전체 완성',keycap:'키캡 전환',admin_edit:'관리자 수정'};
 var timer=null;
 
 function getKey(){return sessionStorage.getItem('snl_admin_key')||'';}
@@ -178,7 +190,8 @@ function renderTables(){
   var us=DATA.users.filter(function(u){return match(u,q);});
   $g('tb-users').innerHTML=us.map(function(u){
     return '<tr><td><b>'+esc(u.name)+'</b></td><td>'+esc(u.phone)+'</td><td>'+esc(u.address)+'</td><td>'+u.stamps+'/9</td><td>'+u.bingo_lines+'</td><td>'+u.tickets+'장</td><td>'+esc(u.created_at)+'</td><td>'+esc(u.last_seen)+'</td>'+
-      '<td><a href="#" onclick="editUser(\''+esc(u.phone)+'\');return false" style="color:var(--magenta);font-weight:700;margin-right:8px">수정</a>'+
+      '<td><a href="#" onclick="openBoard(\''+esc(u.phone)+'\');return false" style="color:var(--magenta-dark);font-weight:700;margin-right:8px">빙고판</a>'+
+      '<a href="#" onclick="editUser(\''+esc(u.phone)+'\');return false" style="color:var(--magenta);font-weight:700;margin-right:8px">수정</a>'+
       '<a href="#" onclick="delUser(\''+esc(u.phone)+'\');return false" style="color:var(--red);font-weight:700">삭제</a></td></tr>';
   }).join('');
   $g('em-users').style.display=us.length?'none':'block';
@@ -189,6 +202,44 @@ function renderTables(){
   }).join('');
   $g('em-events').style.display=ev.length?'none':'block';
 }
+/* ═══ 참여자 빙고판 수정 ═══ */
+var bmPhone=null, bmState=null;
+async function openBoard(phone){
+  if(!STORES.length) await loadStores();
+  var u=DATA.users.find(function(x){return x.phone===phone;});
+  if(!u){return;}
+  if(!u.state){alert('진행 중인 빙고가 없습니다. (아직 코스를 선택하지 않은 참여자)');return;}
+  try{bmState=JSON.parse(u.state);}catch(e){alert('상태 데이터를 읽을 수 없습니다.');return;}
+  if(!bmState||!bmState.board||bmState.board.length!==9){alert('진행 중인 빙고가 없습니다.');return;}
+  if(!bmState.stamped||bmState.stamped.length!==9) bmState.stamped=[false,false,false,false,false,false,false,false,false];
+  bmPhone=phone;
+  $g('bm-title').textContent=u.name+' ('+phone+') 빙고판 수정';
+  renderBM();
+  $g('board-modal').style.display='flex';
+}
+function bmStoreName(key){
+  var s=STORES.find(function(x){return x.key===key;});
+  return s?s.name:(key||'빈 칸');
+}
+function renderBM(){
+  var g=$g('bm-grid'); g.innerHTML='';
+  bmState.board.forEach(function(key,i){
+    var on=!!bmState.stamped[i];
+    var b=document.createElement('button');
+    b.style.cssText='aspect-ratio:1;border-radius:10px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;padding:4px;word-break:keep-all;line-height:1.3;border:2px solid '+(on?'#A62C96':'#EBDDE9')+';background:'+(on?'#F6DFF3':'#fff')+';color:'+(on?'#7A1E6C':'#8B7F89');
+    b.textContent=(on?'✓ ':'')+bmStoreName(key);
+    b.onclick=function(){ bmState.stamped[i]=!bmState.stamped[i]; renderBM(); };
+    g.appendChild(b);
+  });
+}
+function closeBoard(){ $g('board-modal').style.display='none'; bmPhone=null; bmState=null; }
+async function saveBoard(){
+  if(!bmPhone||!bmState) return;
+  bmState.v=Date.now(); // 참여자 기기보다 최신으로 표시 → 자동 반영
+  var r=await fetch('/api/admin/user/state',{method:'POST',headers:{'content-type':'application/json','x-admin-key':getKey()},body:JSON.stringify({phone:bmPhone,state:JSON.stringify(bmState)})});
+  if(r.ok){ closeBoard(); load(); } else alert('저장 실패: '+r.status);
+}
+
 async function editUser(phone){
   var u=DATA.users.find(function(x){return x.phone===phone;});
   if(!u) return;
