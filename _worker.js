@@ -52,15 +52,26 @@ async function handleApi(request, env, url) {
     return json({ ok: true });
   }
 
-  // 참여자 등록/갱신 (전화번호 기준 upsert)
+  // 참여자 등록/갱신 (전화번호 기준 upsert) — 기존 진행상황(state) 반환 → 기기 간 이어하기
   if (p === '/api/register' && request.method === 'POST') {
     const { name, phone, address } = await request.json();
     if (!name || !phone) return json({ error: 'name/phone required' }, 400);
+    const existing = await env.DB.prepare(`SELECT state FROM users WHERE phone = ?1`).bind(phone).first();
     await env.DB.prepare(
       `INSERT INTO users (phone, name, address, created_at, last_seen) VALUES (?1, ?2, ?3, ${KST}, ${KST})
        ON CONFLICT(phone) DO UPDATE SET name = ?2, address = ?3, last_seen = ${KST}`
     ).bind(phone, name, address || '').run();
     await logEvent(env, phone, 'register', '', '');
+    return json({ ok: true, state: existing && existing.state ? existing.state : null });
+  }
+
+  // 진행상황 서버 저장 (기기 간 이어하기용)
+  if (p === '/api/state' && request.method === 'POST') {
+    const { phone, state } = await request.json();
+    if (!phone || !state) return json({ error: 'phone/state required' }, 400);
+    if (String(state).length > 20000) return json({ error: 'state too large' }, 400);
+    await env.DB.prepare(`UPDATE users SET state = ?2, last_seen = ${KST} WHERE phone = ?1`)
+      .bind(phone, String(state)).run();
     return json({ ok: true });
   }
 
