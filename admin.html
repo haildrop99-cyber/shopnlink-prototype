@@ -56,6 +56,22 @@ tr:hover td{background:#FDF8FC}
 .b-bingo_all{background:#FCE1DC;color:var(--red)}
 .empty{padding:40px;text-align:center;color:var(--gray);font-size:13.5px}
 .tbl-scroll{overflow-x:auto}
+/* 업체 관리 카드 */
+.st-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}
+.st-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.st-img{width:52px;height:52px;border-radius:12px;background:var(--pink-soft);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;overflow:hidden;flex:none}
+.st-img img{width:100%;height:100%;object-fit:cover}
+.st-head .nm{font-size:15px;font-weight:900}
+.st-head .ct{font-size:11.5px;color:var(--gray);margin-top:2px}
+.st-field{margin-bottom:9px}
+.st-field label{display:block;font-size:11px;font-weight:800;color:var(--gray);margin-bottom:4px}
+.st-field input{width:100%;padding:9px 11px;border:1.5px solid var(--line);border-radius:9px;font-size:13px;font-family:inherit}
+.st-field input:focus{outline:none;border-color:var(--magenta)}
+.st-code-row{display:flex;gap:6px}
+.st-code-row input{flex:1;letter-spacing:4px;font-weight:800;text-transform:uppercase}
+.st-actions{display:flex;gap:6px;margin-top:11px}
+.st-actions .btn{padding:9px 12px;font-size:12px;border-radius:9px;flex:1}
+.st-saved{font-size:11.5px;color:var(--green);font-weight:800;text-align:center;margin-top:8px;display:none}
 @media(max-width:640px){.wrap{padding:14px}.search{width:130px}}
 </style>
 </head>
@@ -92,6 +108,7 @@ tr:hover td{background:#FDF8FC}
     <div class="tabs">
       <div class="tab on" id="tab-users" onclick="setTab('users')">참여자</div>
       <div class="tab" id="tab-events" onclick="setTab('events')">이용기록</div>
+      <div class="tab" id="tab-stores" onclick="setTab('stores')">업체 관리</div>
       <input class="search" id="q" placeholder="이름/전화번호 검색" oninput="renderTables()">
     </div>
     <div class="card tbl-scroll" id="pane-users">
@@ -101,6 +118,10 @@ tr:hover td{background:#FDF8FC}
     <div class="card tbl-scroll" id="pane-events" style="display:none">
       <table><thead><tr><th>시간</th><th>이름</th><th>전화번호</th><th>유형</th><th>매장</th><th>상세</th></tr></thead><tbody id="tb-events"></tbody></table>
       <div class="empty" id="em-events" style="display:none">이용기록이 없습니다.</div>
+    </div>
+    <div id="pane-stores" style="display:none">
+      <p style="font-size:12.5px;color:var(--gray);margin-bottom:12px">업체별 인증 코드(6자리)·발행 쿠폰명·이미지를 설정합니다. 참여자 웹에는 저장 즉시 반영됩니다.</p>
+      <div id="store-cards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px"></div>
     </div>
   </div>
 </div>
@@ -191,10 +212,77 @@ function downloadCSV(){
   a.click();
 }
 function setTab(t){
-  $g('tab-users').classList.toggle('on',t==='users');
-  $g('tab-events').classList.toggle('on',t==='events');
-  $g('pane-users').style.display=t==='users'?'block':'none';
-  $g('pane-events').style.display=t==='events'?'block':'none';
+  ['users','events','stores'].forEach(function(k){
+    $g('tab-'+k).classList.toggle('on',t===k);
+    $g('pane-'+k).style.display=t===k?'block':'none';
+  });
+  if(t==='stores') loadStores();
+}
+
+/* ═══ 업체 관리 ═══ */
+var STORES=[];
+async function loadStores(){
+  var r=await fetch('/api/admin/stores',{headers:{'x-admin-key':getKey()}});
+  if(!r.ok) return;
+  STORES=(await r.json()).stores||[];
+  renderStores();
+}
+function randomCode(){
+  var chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789', out='';
+  for(var i=0;i<6;i++) out+=chars[Math.floor(Math.random()*chars.length)];
+  return out;
+}
+function renderStores(){
+  var box=$g('store-cards'); box.innerHTML='';
+  STORES.forEach(function(s){
+    var d=document.createElement('div'); d.className='st-card'; d.id='st-'+s.key;
+    d.innerHTML=
+      '<div class="st-head">'+
+        '<div class="st-img" id="img-'+s.key+'">'+(s.image?'<img src="'+s.image+'">':esc(s.emoji||'🏪'))+'</div>'+
+        '<div><div class="nm">'+esc(s.name)+'</div><div class="ct">'+esc(s.cat||'')+'</div></div>'+
+      '</div>'+
+      '<div class="st-field"><label>발행 쿠폰명</label><input id="cn-'+s.key+'" value="'+esc(s.coupon_name||'')+'" placeholder="예: 10% 할인"></div>'+
+      '<div class="st-field"><label>쿠폰 조건 문구</label><input id="cd-'+s.key+'" value="'+esc(s.cond||'')+'" placeholder="예: 1만원 이상 구매시"></div>'+
+      '<div class="st-field"><label>매장 인증 코드 (영문+숫자 6자리)</label><div class="st-code-row">'+
+        '<input id="co-'+s.key+'" maxlength="6" value="'+esc(s.code||'')+'" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,\'\')">'+
+        '<button class="btn ghost" style="padding:8px 12px;font-size:12px" onclick="$g(\'co-'+s.key+'\').value=randomCode()">🎲</button>'+
+      '</div></div>'+
+      '<input type="file" accept="image/*" id="fi-'+s.key+'" style="display:none" onchange="pickImage(\''+s.key+'\',this)">'+
+      '<div class="st-actions">'+
+        '<button class="btn ghost" onclick="$g(\'fi-'+s.key+'\').click()">이미지 변경</button>'+
+        '<button class="btn" onclick="saveStore(\''+s.key+'\')">저장</button>'+
+      '</div>'+
+      '<div class="st-saved" id="sv-'+s.key+'">✓ 저장되었습니다</div>';
+    box.appendChild(d);
+  });
+}
+var pendingImages={};
+function pickImage(key, input){
+  var f=input.files&&input.files[0]; if(!f) return;
+  var img=new Image();
+  img.onload=function(){
+    var size=240, cv=document.createElement('canvas');
+    var scale=Math.max(size/img.width, size/img.height);
+    cv.width=size; cv.height=size;
+    var ctx=cv.getContext('2d');
+    ctx.drawImage(img,(size-img.width*scale)/2,(size-img.height*scale)/2,img.width*scale,img.height*scale);
+    var dataUrl=cv.toDataURL('image/jpeg',0.82);
+    pendingImages[key]=dataUrl;
+    $g('img-'+key).innerHTML='<img src="'+dataUrl+'">';
+  };
+  img.src=URL.createObjectURL(f);
+}
+async function saveStore(key){
+  var code=$g('co-'+key).value.trim();
+  if(code.length!==6){alert('인증 코드는 6자리여야 합니다.');return;}
+  var body={key:key, coupon_name:$g('cn-'+key).value.trim(), cond:$g('cd-'+key).value.trim(), code:code};
+  if(pendingImages[key]!==undefined) body.image=pendingImages[key];
+  var r=await fetch('/api/admin/store/update',{method:'POST',headers:{'content-type':'application/json','x-admin-key':getKey()},body:JSON.stringify(body)});
+  if(r.ok){
+    var sv=$g('sv-'+key); sv.style.display='block';
+    setTimeout(function(){sv.style.display='none';},2000);
+    delete pendingImages[key];
+  }else alert('저장 실패: '+r.status);
 }
 // 세션에 키가 있으면 자동 로그인
 if(getKey()){

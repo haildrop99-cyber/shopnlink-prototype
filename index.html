@@ -160,6 +160,18 @@ body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;backg
 .barcode{height:46px;margin:0 auto;width:200px;background:repeating-linear-gradient(90deg,#241B22 0 2px,transparent 2px 4px,#241B22 4px 7px,transparent 7px 8px,#241B22 8px 9px,transparent 9px 12px,#241B22 12px 14px,transparent 14px 17px)}
 .coupon .c-num{font-size:11px;letter-spacing:3px;color:var(--gray);margin-top:7px;font-weight:600}
 .sheet .hint{font-size:11.5px;color:var(--gray);text-align:center;margin-top:12px;line-height:1.6}
+/* 매장 인증 코드 입력 */
+.code-row{margin:0 0 12px}
+.code-row label{display:block;font-size:12.5px;font-weight:800;margin-bottom:7px;color:var(--magenta-dark)}
+.code-row input{width:100%;padding:15px 16px;border:1.5px solid var(--line);border-radius:13px;font-size:20px;font-weight:800;font-family:inherit;background:#fff;color:var(--ink);text-align:center;letter-spacing:8px}
+.code-row input:focus{outline:none;border-color:var(--magenta);box-shadow:0 0 0 3px rgba(166,44,150,.1)}
+.err-msg{display:none;font-size:12.5px;color:#C0392B;font-weight:700;text-align:center;margin-top:10px;background:#FCE9E5;border-radius:10px;padding:10px}
+/* 업체 이미지 */
+.cell .cimg{width:46px;height:46px;border-radius:10px;object-fit:cover;filter:grayscale(1) opacity(.35);transition:.25s}
+.cell.stamped .cimg{filter:none;transform:scale(1.06)}
+.store .semo img{width:100%;height:100%;border-radius:12px;object-fit:cover}
+.coupon .c-head .cemo img{width:100%;height:100%;border-radius:13px;object-fit:cover}
+@media(max-width:390px){.cell .cimg{width:38px;height:38px}}
 .picker-list{max-height:48vh;overflow-y:auto;margin-top:4px}
 .sheet h3.pick-t{font-size:17px;font-weight:900;margin:2px 0 14px;text-align:center}
 
@@ -393,7 +405,12 @@ html,body{overflow-x:hidden;width:100%}
       <div class="c-body"><div class="cond" id="sh-cond"></div><div class="ben" id="sh-ben"></div><div class="perf"></div></div>
       <div class="c-code"><div class="barcode"></div><div class="c-num" id="sh-code">SHOP-LINK-2026</div></div>
     </div>
+    <div class="code-row" id="sh-code-row">
+      <label>매장 인증 코드</label>
+      <input id="sh-code-input" maxlength="6" placeholder="직원이 입력해주세요" autocomplete="off" autocapitalize="characters" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
+    </div>
     <button class="btn" id="sh-btn"></button>
+    <p class="err-msg" id="sh-err"></p>
     <p class="hint" id="sh-hint"></p>
   </div>
 </div>
@@ -586,7 +603,8 @@ function render(){
     }else{
       var s=STORES[key];
       var chk = stamped[i] ? '<div class="chk">✓</div>' : '';
-      c.innerHTML='<div class="inner"><div class="cemo">'+s.emo+'</div><div class="cname">'+s.name+'</div></div>'+chk;
+      var icon = s.image ? '<img class="cimg" src="'+s.image+'" alt="">' : '<div class="cemo">'+s.emo+'</div>';
+      c.innerHTML='<div class="inner">'+icon+'<div class="cname">'+s.name+'</div></div>'+chk;
       if(stamped[i]) c.className+=" stamped";
       if(stamped[i]&&isInDoneLine(i)) c.className+=" line-done";
       c.onclick=function(){openStore(key,i);};
@@ -606,7 +624,8 @@ function render(){
              : stamped[idx] ? '<span class="stat done">방문완료</span>'
              : '<span class="stat on">빙고판</span>';
     var d=document.createElement("div"); d.className="store";
-    d.innerHTML='<div class="semo">'+s.emo+'</div><div style="flex:1"><div class="sname">'+s.name+'</div><div class="sben">'+s.cond+' '+s.ben+'</div></div>'+stat;
+    var sic = s.image ? '<img src="'+s.image+'" alt="">' : s.emo;
+    d.innerHTML='<div class="semo">'+sic+'</div><div style="flex:1"><div class="sname">'+s.name+'</div><div class="sben">'+s.cond+' '+s.ben+'</div></div>'+stat;
     d.onclick=function(){openStore(key, board.indexOf(key));};
     list.appendChild(d);
   });
@@ -631,32 +650,58 @@ function hideSheet(){hideEl("sheet-dim");hideEl("picker-dim");}
 /* ═══ 쿠폰 시트 ═══ */
 function openStore(key, idx){
   var s=STORES[key];
-  $("sh-emo").textContent=s.emo;
+  $("sh-emo").innerHTML = s.image ? '<img src="'+s.image+'" alt="">' : s.emo;
   $("sh-name").textContent=s.name;
   $("sh-cat").textContent=s.cat;
   $("sh-cond").textContent=s.cond;
   $("sh-ben").textContent=s.ben;
   $("sh-code").textContent="SHOPNLINK-2026-"+key.toUpperCase();
-  var btn=$("sh-btn"), hint=$("sh-hint");
+  var btn=$("sh-btn"), hint=$("sh-hint"), codeRow=$("sh-code-row"), err=$("sh-err");
+  err.style.display="none"; $("sh-code-input").value="";
   if(idx>=0 && stamped[idx]){
+    codeRow.style.display="none";
     btn.textContent="스탬프 획득 완료 ✓"; btn.disabled=true; btn.onclick=null;
     hint.textContent="이미 방문한 업체예요.";
   }else if(idx>=0){
-    btn.textContent="매장에서 쿠폰 사용하기"; btn.disabled=false;
-    hint.textContent="※ 결제 시 직원에게 이 화면을 보여주세요. 쿠폰 사용 확인 후 스탬프가 찍힙니다.";
-    btn.onclick=function(){hideSheet();stamp(idx);};
+    codeRow.style.display="block";
+    btn.textContent="쿠폰 발행받기"; btn.disabled=false;
+    hint.textContent="※ 결제 시 직원에게 이 화면을 보여주세요. 직원이 매장 인증 코드를 입력하면 쿠폰이 발행되고 스탬프가 찍힙니다.";
+    btn.onclick=function(){redeem(key, idx);};
   }else{
+    codeRow.style.display="none";
     btn.textContent="빙고판에 없는 업체예요"; btn.disabled=true; btn.onclick=null;
     hint.textContent = mode==="free" ? "빙고판의 빈 칸을 눌러 이 업체를 추가할 수 있어요." : "이번 코스에 포함되지 않은 업체입니다.";
   }
   showEl("sheet-dim");
 }
+/* 매장 코드 검증 → 쿠폰 발행 + 스탬프 */
+function shErr(msg){ var e=$("sh-err"); e.textContent=msg; e.style.display="block"; }
+function redeem(key, idx){
+  var code=($("sh-code-input").value||"").trim();
+  if(code.length!==6){ shErr("6자리 코드를 입력해주세요."); return; }
+  var btn=$("sh-btn"); btn.disabled=true; btn.textContent="확인 중…";
+  var u=getUser();
+  fetch('/api/redeem',{method:'POST',headers:{'content-type':'application/json'},
+    body:JSON.stringify({phone:u&&u.phone?u.phone:null,storeKey:key,code:code})})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(d.ok){ hideSheet(); stamp(idx, true); }
+    else{
+      btn.disabled=false; btn.textContent="쿠폰 발행받기";
+      shErr("코드가 올바르지 않아요. 매장 직원에게 확인해주세요.");
+    }
+  })
+  .catch(function(){
+    btn.disabled=false; btn.textContent="쿠폰 발행받기";
+    shErr("네트워크 오류예요. 잠시 후 다시 시도해주세요.");
+  });
+}
 
 /* ═══ 스탬프 & 빙고 판정 ═══ */
-function stamp(idx){
+function stamp(idx, serverLogged){
   stamped[idx]=true; clickSound();
   var u=getUser();
-  if(u&&u.phone) api('event',{phone:u.phone,type:'stamp',store:STORES[board[idx]].name});
+  if(u&&u.phone&&!serverLogged) api('event',{phone:u.phone,type:'stamp',store:STORES[board[idx]].name});
   var newly=0;
   LINES.forEach(function(line,li){
     if(doneLines.indexOf(li)<0 && line.every(function(i){return stamped[i];})){
@@ -752,8 +797,24 @@ function clickSound(){ /* 클리커 사운드 효과 */
     o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+.12);
   }catch(e){}
 }
+/* 서버에서 업체 정보(이미지·쿠폰명 등) 로드 — 관리자 페이지에서 수정한 내용 반영 */
+function loadStores(){
+  fetch('/api/stores').then(function(r){return r.json();}).then(function(d){
+    if(!d.stores) return;
+    d.stores.forEach(function(s){
+      var t=STORES[s.key]; if(!t) return;
+      if(s.name) t.name=s.name;
+      if(s.cat) t.cat=s.cat;
+      if(s.cond) t.cond=s.cond;
+      if(s.coupon_name) t.ben=s.coupon_name;
+      t.image=s.image||null;
+    });
+    render();
+  }).catch(function(){});
+}
 render();
 restoreSession();
+loadStores();
 </script>
 </body>
 </html>

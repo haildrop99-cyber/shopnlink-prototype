@@ -48,7 +48,7 @@
 5. `#bingo` 빙고 — 3×3판(프레임형, 이모지 아이콘+흑백처리), 참여업체 13곳 리스트, 쿠폰 바텀시트(바코드), 진행상황 3박스, 응모권 배지
 
 ### 빙고/응모 규칙 (확정)
-- 스탬프: 쿠폰 사용 버튼 → 해당 칸 스탬프
+- **스탬프 = 매장 코드 인증 방식**: 쿠폰 화면에서 직원이 해당 매장의 6자리 코드(영문+숫자, 대소문자 무시) 입력 → `POST /api/redeem`으로 서버 검증 → 성공 시에만 쿠폰 발행+스탬프. 코드는 D1 `stores` 테이블에만 존재(클라이언트 미노출). 오입력 재시도 제한 없음
 - 빙고 라인 8개(가로3+세로3+대각2), **한 줄 완성당 응모권 1장, 전체 최대 8장** (`pendingTickets=Math.min(newly, 8-tickets)`)
 - **다량 응모권 연출**: 여러 줄 동시 완성 시 티켓 스택으로 표시("남은 응모권 N장" + 뒤에 겹친 카드), **한 장씩 응모하기 → "샤로록 접수" → 다음 티켓** 반복 (사행성/도파민 연출)
 - 마지막 티켓 응모 후: 3→2→1 카운트다운("행운이 찾아가는 중…") → **시크릿 경품 도착(🎁 CLICK)** → "축하합니다! 완성한 빙고 한 줄이 실물 키캡으로 전환되었습니다! (주 1회 일괄 발송)"
@@ -78,20 +78,28 @@ kiko 살롱드키코(1만원 이상 10% 할인·기획서 확정) / embro 엠브
 users  (phone TEXT PK, name, address, created_at, last_seen)  -- KST(+9h) 저장
 events (id INTEGER PK AI, phone, type, store, detail, created_at)
 -- type: register | stamp | bingo_line | ticket | bingo_all | keycap
+stores (key TEXT PK, name, cat, cond, coupon_name, emoji, image, code)
+-- image: base64 dataURL(240px jpeg) 또는 '' / code: 6자리 인증코드(대문자)
 ```
 전화번호가 유저 키 — 같은 번호 재등록 시 upsert(이름/주소 갱신), 기록 합산.
+stores는 시드 완료(13곳, 초기 랜덤 코드). index.html의 STORES 객체는 폴백이며 로드 시 `/api/stores`로 덮어씀.
 
 ### API
+- `GET /api/stores` — 업체 목록 공개(코드 제외: key,name,cat,cond,coupon_name,emoji,image)
+- `POST /api/redeem` {phone, storeKey, code} — 코드 검증(대소문자 무시), 성공 시 stamp 이벤트 서버 기록('코드인증') 후 {ok:true}
 - `POST /api/register` {name, phone, address}
-- `POST /api/event` {phone, type, store?, detail?}
+- `POST /api/event` {phone, type, store?, detail?} — redeem 성공 시 클라이언트는 stamp 이벤트 중복 전송 안 함(stamp(idx,true))
 - 관리자(헤더 `x-admin-key` 필요):
   - `GET /api/admin/login` — 키 검증
   - `GET /api/admin/data` — users(스탬프/응모권/빙고줄 집계), events(최근 500), totals
+  - `GET /api/admin/stores` — 코드 포함 업체 목록
+  - `POST /api/admin/store/update` {key, name?, cond?, coupon_name?, image?, code?} — code는 6자리 강제
   - `POST /api/admin/user/update` {phone, name, address}
   - `POST /api/admin/user/delete` {phone} — 이용기록 포함 삭제
 
 ### admin.html 기능
-로그인(세션 저장) / 통계 5종 / 참여자·이용기록 탭 / 이름·전화 검색 / 10초 자동 갱신 / CSV 다운로드(BOM 포함) / 참여자 수정(prompt)·삭제
+로그인(세션 저장) / 통계 5종 / 참여자·이용기록·**업체 관리** 탭 / 이름·전화 검색 / 10초 자동 갱신 / CSV 다운로드(BOM 포함) / 참여자 수정(prompt)·삭제
+업체 관리: 업체별 카드 — 발행 쿠폰명·조건 문구·인증 코드(🎲 랜덤생성)·이미지 업로드(캔버스 240px 리사이즈→base64) 저장 → 참여자 웹 즉시 반영
 
 ## 7. 운영 결정사항 기록
 

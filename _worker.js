@@ -28,6 +28,30 @@ async function logEvent(env, phone, type, store, detail) {
 async function handleApi(request, env, url) {
   const p = url.pathname;
 
+  // 업체 목록 (공개 — 코드는 제외)
+  if (p === '/api/stores' && request.method === 'GET') {
+    const rows = await env.DB.prepare(
+      `SELECT key, name, cat, cond, coupon_name, emoji, image FROM stores ORDER BY rowid`
+    ).all();
+    return json({ stores: rows.results });
+  }
+
+  // 쿠폰 발행 — 매장 코드 검증 (대소문자 무시). 성공 시 서버에서 스탬프 기록
+  if (p === '/api/redeem' && request.method === 'POST') {
+    const { phone, storeKey, code } = await request.json();
+    if (!storeKey || !code) return json({ error: 'storeKey/code required' }, 400);
+    const row = await env.DB.prepare(`SELECT name, code FROM stores WHERE key = ?1`).bind(storeKey).first();
+    if (!row) return json({ error: 'store not found' }, 404);
+    if (String(code).trim().toUpperCase() !== String(row.code || '').trim().toUpperCase()) {
+      return json({ ok: false, reason: 'invalid_code' });
+    }
+    if (phone) {
+      await env.DB.prepare(`UPDATE users SET last_seen = ${KST} WHERE phone = ?1`).bind(phone).run();
+      await logEvent(env, phone, 'stamp', row.name, '코드인증');
+    }
+    return json({ ok: true });
+  }
+
   // 참여자 등록/갱신 (전화번호 기준 upsert)
   if (p === '/api/register' && request.method === 'POST') {
     const { name, phone, address } = await request.json();
@@ -56,6 +80,30 @@ async function handleApi(request, env, url) {
     if (key !== expected) return json({ error: 'unauthorized' }, 401);
 
     if (p === '/api/admin/login') return json({ ok: true });
+
+    // 업체 목록 (코드 포함)
+    if (p === '/api/admin/stores' && request.method === 'GET') {
+      const rows = await env.DB.prepare(`SELECT * FROM stores ORDER BY rowid`).all();
+      return json({ stores: rows.results });
+    }
+
+    // 업체 정보 수정 (쿠폰명·조건·이미지·코드)
+    if (p === '/api/admin/store/update' && request.method === 'POST') {
+      const { key, name, cond, coupon_name, image, code } = await request.json();
+      if (!key) return json({ error: 'key required' }, 400);
+      if (code !== undefined && String(code).trim().length !== 6) return json({ error: 'code must be 6 chars' }, 400);
+      await env.DB.prepare(
+        `UPDATE stores SET
+           name = COALESCE(?2, name),
+           cond = COALESCE(?3, cond),
+           coupon_name = COALESCE(?4, coupon_name),
+           image = COALESCE(?5, image),
+           code = COALESCE(?6, code)
+         WHERE key = ?1`
+      ).bind(key, name ?? null, cond ?? null, coupon_name ?? null, image ?? null,
+             code !== undefined ? String(code).trim().toUpperCase() : null).run();
+      return json({ ok: true });
+    }
 
     // 참여자 정보 수정
     if (p === '/api/admin/user/update' && request.method === 'POST') {
