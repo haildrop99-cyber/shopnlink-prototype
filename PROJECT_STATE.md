@@ -32,12 +32,17 @@
 - `_worker.js` — Cloudflare Pages Worker. `/api/*` 처리 + 나머지는 정적 서빙(env.ASSETS)
 - `PROJECT_STATE.md` — 본 문서
 
-## 3. 디자인 시스템
+## 3. 디자인 시스템 (2026-08 "샵가능 빙고투어" 그린·블루 리스킨 적용)
 
-- 폰트: Pretendard (jsdelivr CDN)
-- 컬러: 마젠타 `#A62C96` / 딥마젠타 `#7A1E6C` / 핑크 `#F6DFF3` / 연핑크 `#FBF1FA` / 배경 `#F7EFF6` / 잉크 `#241B22` / 그레이 `#8B7F89` / 라인 `#EBDDE9` / 클로버그린 `#3E8E4F` / 골드 `#F5B301` / 카카오 `#FEE500`
+- **브랜드명: "샤로수길 샵가능 빙고투어"** (구 샵앤링크 → 샵가능으로 변경됨)
+- 폰트: 본문 Pretendard + 헤딩/버튼 **Cafe24Ssurround** (눈누 CDN woff)
+- 컬러(CSS 변수 재정의 방식 — 변수명은 기존 --magenta 계열 유지): 블루버튼 `#4C7FDE`(--magenta) / 딥그린 `#2E6B34`(--magenta-dark) / 연두배경 `#D8E5C0`(--bg) / 크림카드 `#F7F3E3`(--paper) / 그린 `#57A24E` / 옐로 `#F4E14E` / 잉크·블랙보더 `#1B1B18` — 카드 2px 블랙보더 스티커 스타일
+- 에셋: 리포 `/assets/` (hero.png 랜딩히어로 840×1200, kv.png, expert.png 전문가도장, stamp_sha.png 스탬프도장, gift.png, keycap.png, ticket_green/white.png, prize_*.png 5종, store_*.png 13종)
+- 업체 아이콘: D1 stores.image = '/assets/store_*.png' 경로 (관리자 업로드 시 base64로 덮어쓰기 가능)
+- **럭키드로우 상품(시안 기준 변경)**: 1등 Apple Watch SE 3(1명) / 2등 큐브 음식물 처리기 2.5L(2명) / 3등 330W 청소기(3명) / 4등 네오메타 에어프라이어 5L(4명) / 5등 샤로수길 할인쿠폰 1만원권(20명) + 시크릿 경품 키캡(최초 1회)
+- 랜딩 히어로 = /assets/hero.png 단일 이미지(타이틀·빙고비주얼·시크릿배너·일정·구역 포함)
 - 레이아웃: `#phone` max-width 420px 중앙 정렬, 반응형(clamp/svh/dvh, ≤390px 미디어쿼리)
-- 원본 기획: PDF "2026 샤로수길 로컬브랜드 핵심점포 샵앤링크 사업 기획안" + PPT "샤로수길 샵가능_레이아웃_250722" (CustomX Studio)
+- 원본: 디자이너 "웹 디자인.zip" (2026-08-03) / PDF 기획안 / PPT 레이아웃 250722
 
 ## 4. 사용자 플로우 (index.html 화면 순서)
 

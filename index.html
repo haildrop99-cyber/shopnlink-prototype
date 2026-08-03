@@ -3,14 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>샤로수길 샵앤링크 — 빙고투어</title>
+<title>샤로수길 샵가능 빙고투어</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-:root{
-  --magenta:#A62C96; --magenta-dark:#7A1E6C; --pink:#F6DFF3; --pink-soft:#FBF1FA;
-  --ink:#241B22; --gray:#8B7F89; --line:#EBDDE9; --paper:#FFFDFE; --bg:#F7EFF6;
-  --clover:#3E8E4F; --gold:#F5B301;
+@font-face{
+  font-family:'Cafe24Ssurround';
+  src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2004@1.1/Cafe24Ssurround.woff') format('woff');
+  font-weight:normal;font-style:normal;font-display:swap;
 }
+:root{
+  /* 샵가능 빙고투어 그린·블루 팔레트 (2026-08 디자인 시안) */
+  --magenta:#4C7FDE;        /* 주요 버튼(블루) */
+  --magenta-dark:#2E6B34;   /* 강조 텍스트(딥그린) */
+  --pink:#DCE9C4;           /* 연그린 칩 */
+  --pink-soft:#EFF4E3;      /* 아주 연한 그린 */
+  --ink:#1B1B18; --gray:#6F6D5F; --line:#1B1B18;
+  --paper:#F7F3E3;          /* 크림 카드 */
+  --bg:#D8E5C0;             /* 연두 페이지 배경 */
+  --clover:#3E8E4F; --gold:#F4E14E; --green:#57A24E;
+}
+.display, .hdr h2, .sec-title, .btn, .hero-title{font-family:'Cafe24Ssurround','Pretendard Variable',sans-serif;font-weight:normal}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
 body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;background:#E9DDE7;color:var(--ink);display:flex;justify-content:center;min-height:100vh}
@@ -24,8 +36,10 @@ body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;backg
 
 /* ═══ 1. 랜딩 ═══ */
 #landing{background:var(--bg)}
+.hero-img{width:100%;line-height:0;background:#57A24E}
+.hero-img img{width:100%;height:auto;display:block}
 .hero{position:relative;padding:58px 24px 30px;text-align:center;color:#fff;overflow:hidden;
-  background:linear-gradient(165deg,#C445B2 0%,var(--magenta) 42%,#6E1B61 100%)}
+  background:linear-gradient(165deg,#6FB35F 0%,var(--green) 42%,#2E6B34 100%)}
 .hero .glow{position:absolute;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 70%);top:-90px;right:-70px;pointer-events:none}
 .hero .badge{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.45);padding:6px 16px;border-radius:20px;font-size:12.5px;font-weight:700;letter-spacing:.6px;margin-bottom:16px;backdrop-filter:blur(2px)}
 .hero h1{font-size:46px;font-weight:900;line-height:1.12;letter-spacing:-1.5px;text-shadow:0 2px 10px rgba(0,0,0,.15)}
@@ -42,7 +56,7 @@ body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;backg
 .hero .chip{background:rgba(30,5,28,.28);border:1px solid rgba(255,255,255,.22);border-radius:12px;padding:10px 15px;font-size:13px;font-weight:700}
 .hero .chip b{display:block;font-size:10.5px;font-weight:500;opacity:.72;margin-bottom:3px;letter-spacing:.4px}
 .hero .scroll-hint{margin-top:22px;font-size:11.5px;opacity:.65;letter-spacing:1px}
-.land-body{background:var(--bg);border-radius:26px 26px 0 0;margin-top:-18px;position:relative;padding:30px 22px 8px;flex:1}
+.land-body{background:var(--bg);position:relative;padding:26px 22px 8px;flex:1}
 .sec-title{font-size:19px;font-weight:900;margin-bottom:14px;letter-spacing:-.3px;display:flex;align-items:center;gap:8px}
 .sec-title::before{content:"";width:5px;height:18px;border-radius:3px;background:var(--magenta)}
 .welcome{font-size:14.5px;line-height:1.8;color:#54474F;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:20px;margin-bottom:30px;box-shadow:0 2px 10px rgba(120,40,110,.05)}
@@ -59,6 +73,8 @@ body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;backg
 .prize.first{grid-column:1/-1;background:linear-gradient(135deg,#FFF9E8,#FFF3D0);border-color:#F2DFA4}
 .prize .emo{font-size:36px}
 .prize.first .emo{font-size:44px}
+.pimg{height:64px;width:auto;max-width:100%;object-fit:contain}
+.pimg.big{height:96px}
 .prize .rank{display:inline-block;font-size:10.5px;font-weight:800;color:#fff;background:var(--magenta);border-radius:20px;padding:3px 10px;margin-top:8px}
 .prize.first .rank{background:var(--gold);color:#5C4300}
 .prize .name{font-size:13.5px;font-weight:700;margin-top:6px;line-height:1.4}
@@ -284,6 +300,53 @@ html,body{overflow-x:hidden;width:100%}
   .pbox{padding:9px}
   .pbox .pv{font-size:14px}
 }
+
+/* ═══ 샵가능 리스킨 오버라이드 (그린·블루·크림, 블랙 보더 스티커 스타일) ═══ */
+.welcome,.step,.prize,.course,.save-card,.save-warn,.board-frame,.store,.pbox,.notice{border-width:2px;border-color:#1B1B18;box-shadow:none}
+.welcome,.step,.prize,.course,.save-card,.store,.pbox{background:var(--paper)}
+.notice{background:var(--pink-soft);border-style:solid;color:#4A4A3C}
+.cell{border-width:2px;border-color:#1B1B18;box-shadow:none;background:var(--paper)}
+.cell .inner{background:#FFFDF2}
+.cell.empty .inner{background:repeating-linear-gradient(45deg,#F1EDDD,#F1EDDD 6px,#E6E1CC 6px,#E6E1CC 12px)}
+.cell.stamped{border-color:#2E6B34}
+.cell.stamped .inner{background:linear-gradient(150deg,#DFF0C9,#C4E0A2)}
+.cell.stamped .cname{color:#2E6B34}
+.cell .chk{background:var(--green)}
+.cell.line-done{border-color:#4C7FDE;box-shadow:0 0 0 2px rgba(76,127,222,.45), 0 4px 10px rgba(76,127,222,.25)}
+.stamp-img{position:absolute;inset:0;margin:auto;width:52px;height:52px;object-fit:contain;transform:rotate(-10deg);opacity:.93;pointer-events:none;animation:popin .35s cubic-bezier(.2,1.6,.4,1)}
+.keycap-note{background:#FFF9D9;border:2px solid #1B1B18;color:#5C5410}
+.field input,.consent,.code-row input{border-color:#1B1B18}
+.field input:focus,.code-row input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(87,162,78,.18)}
+.consent.on{border-color:var(--green);background:var(--pink-soft)}
+.consent input{accent-color:var(--green)}
+.hdr{background:rgba(216,229,192,.94)}
+.hdr .back{border:2px solid #1B1B18;background:var(--paper)}
+.ticket-badge{background:#2E6B34;color:#F4E14E}
+.btn{box-shadow:0 4px 0 rgba(27,27,24,.28);letter-spacing:0}
+.btn:disabled{background:#B9C4A9;box-shadow:none;color:#F2F2EA}
+.coupon{border:2px solid #1B1B18;background:var(--paper)}
+.coupon .c-head{background:linear-gradient(135deg,#6FB35F,#3E8E43)}
+.coupon .ben{color:#1B1B18}
+.coupon .cond{color:var(--green);font-weight:800}
+.sheet{background:var(--bg)}
+.lticket{background:var(--paper);border:2px solid #1B1B18}
+.tk-visual-img{margin:14px auto}
+.tk-visual-img img{width:100%;max-width:280px;display:block;margin:0 auto}
+.gift-card{border:2px solid #1B1B18}
+.gift-box img{width:110px;height:auto;display:block}
+.kc img{height:84px;width:auto}
+.seal-img{width:132px;height:auto;display:block;margin:16px auto 6px;animation:stampIn .5s cubic-bezier(.2,1.6,.4,1) .3s both}
+.luck-card{border:2px solid #1B1B18}
+.expert-card h3{color:#2E6B34}
+.today-q{color:#2E6B34}
+.step .num{font-family:'Cafe24Ssurround'}
+.steps .step:nth-child(1) .num{background:#57A24E;color:#fff}
+.steps .step:nth-child(2) .num{background:#4C7FDE;color:#fff}
+.steps .step:nth-child(3) .num{background:#F4E14E;color:#1B1B18}
+.course .tag{background:#57A24E;color:#fff}
+.course .route{background:#EFF4E3;border:1.5px solid #57A24E;color:#2E6B34}
+.addr-note{color:#2E6B34;background:#EFF4E3;border-color:#BFD3A0}
+.secret-banner{display:none}
 </style>
 </head>
 <body>
@@ -292,23 +355,7 @@ html,body{overflow-x:hidden;width:100%}
 
 <!-- ═══ 1. 랜딩 ═══ -->
 <section class="screen active" id="landing">
-  <div class="hero">
-    <div class="glow"></div>
-    <div class="badge">2026 샤로수길 로컬브랜드</div>
-    <h1>샵앤링크<br><em>빙고투어</em></h1>
-    <p class="sub">먹고, 걷고, 혜택받고!<br>샤로수길 숨은 맛집을 찾다 보면 만나는 경품들</p>
-    <div class="kv">
-      <div class="tile t1">🍜</div><div class="tile t2">🎟️</div><div class="tile t3">☕</div>
-      <span class="spark" style="top:-4px;left:64px">✨</span>
-      <span class="spark" style="bottom:-4px;right:66px">🍀</span>
-    </div>
-    <div class="secret-banner">🎁 한 줄만 완성해도 숨겨진 시크릿 경품 OPEN!</div>
-    <div class="info">
-      <div class="chip"><b>진행 일정</b>2026.08.10 – 09.11</div>
-      <div class="chip"><b>진행 구역</b>샤로수길 전구역</div>
-    </div>
-    <div class="scroll-hint">▼ 아래로 내려 게임 소개 보기</div>
-  </div>
+  <div class="hero-img"><img src="/assets/hero.png" alt="샤로수길 샵가능 빙고투어 — 먹고, 걷고, 혜택받고! 2026.08.10-09.11 샤로수길 전구역"></div>
   <div class="land-body">
     <div class="welcome">
       <span class="hello">샤로수길에 오신 여러분, 환영합니다! 🙌</span>
@@ -324,15 +371,15 @@ html,body{overflow-x:hidden;width:100%}
     </div>
     <h2 class="sec-title">럭키드로우 상품</h2>
     <div class="prizes">
-      <div class="prize first"><div class="emo">📱</div><div class="rank">1등 · 1명</div><div class="name">iPad Wi-Fi 128GB — 실버</div></div>
-      <div class="prize"><div class="emo">📷</div><div class="rank">2등 · 2명</div><div class="name">후지필름 인스탁스<br>미니11 카메라</div></div>
-      <div class="prize"><div class="emo">🍱</div><div class="rank">3등 · 5명</div><div class="name">배달의민족<br>5만원 상품권</div></div>
-      <div class="prize"><div class="emo">☕</div><div class="rank">4등 · 50명</div><div class="name">커피 기프티콘</div><div class="qty">문자 발송</div></div>
-      <div class="prize"><div class="emo">⌨️</div><div class="rank">완주 굿즈</div><div class="name">3구 키캡</div><div class="qty">빙고 한 줄 완성 시</div></div>
+      <div class="prize first"><img class="pimg big" src="/assets/prize_watch.png" alt=""><div class="rank">1등 · 1명</div><div class="name">Apple Watch SE 3</div></div>
+      <div class="prize"><img class="pimg" src="/assets/prize_foodproc.png" alt=""><div class="rank">2등 · 2명</div><div class="name">큐브 음식물 처리기<br>2.5L</div></div>
+      <div class="prize"><img class="pimg" src="/assets/prize_cleaner.png" alt=""><div class="rank">3등 · 3명</div><div class="name">330W 흡입력<br>괴물 청소기</div></div>
+      <div class="prize"><img class="pimg" src="/assets/prize_airfryer.png" alt=""><div class="rank">4등 · 4명</div><div class="name">네오메타<br>에어프라이어 5L</div></div>
+      <div class="prize"><img class="pimg" src="/assets/prize_coupon.png" alt=""><div class="rank">5등 · 20명</div><div class="name">샤로수길 할인쿠폰<br>1만원권</div></div>
     </div>
-    <div class="keycap-note">🍀 빙고 한 줄을 완성할 때마다 럭키드로우 응모권이 자동 지급돼요. 완주 굿즈는 일일 한정 수량(총 500개)으로 제공됩니다.</div>
+    <div class="keycap-note">🍀 빙고 한 줄을 완성할 때마다 럭키드로우 응모권이 자동 지급돼요. 최초 한 줄 완성 시 시크릿 경품(키캡)도 드립니다.</div>
     <p class="today-q">오늘은 어디부터 즐겨볼까요?</p>
-    <div class="cta-fix"><button class="btn" onclick="go('privacy')">샵앤링크 참여하기</button></div>
+    <div class="cta-fix"><button class="btn" onclick="go('privacy')">샵가능 빙고투어 참여하기</button></div>
   </div>
 </section>
 
@@ -432,7 +479,7 @@ html,body{overflow-x:hidden;width:100%}
     <div class="lticket">
     <div class="lt-top" id="tk-title">빙고 한 줄 완성! 🎉</div>
     <div class="tk-count-label" id="tk-label">남은 응모권 1장</div>
-    <div class="tk-visual"><div class="dots"><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="lt">LUCKY TICKET</div><div class="ln" id="tk-num">× 1</div></div>
+    <div class="tk-visual-img"><img src="/assets/ticket_green.png" alt="LUCKY TICKET"><span id="tk-num" style="display:none">× 1</span></div>
     <p class="small">※ '응모하기' 버튼 클릭 시 자동 응모되며, 행사 종료 후 추첨을 통해<br>당첨자에게 개별 안내가 진행될 예정입니다.</p>
     <button class="btn" onclick="submitTicket()">응모하기</button>
   </div></div></div>
@@ -442,7 +489,7 @@ html,body{overflow-x:hidden;width:100%}
 <div class="overlay" id="gift-dim">
   <div class="ov-card"><div class="gift-card">
     <h3>시크릿 경품 도착!</h3>
-    <div class="gift-box" onclick="openGift()">🎁</div>
+    <div class="gift-box" onclick="openGift()"><img src="/assets/gift.png" alt="시크릿 경품 선물상자"></div>
     <div class="click-hint">CLICK!</div>
   </div></div>
 </div>
@@ -451,7 +498,7 @@ html,body{overflow-x:hidden;width:100%}
 <div class="overlay" id="keycap-dim">
   <div class="ov-card"><div class="gift-card keycap-msg">
     <h3>축하합니다! 🎉</h3>
-    <div class="kc">⌨️</div>
+    <div class="kc"><img src="/assets/keycap.png" alt="실물 키캡"></div>
     <p><b id="kc-lines">완성한 빙고 한 줄이</b><br><b>실물 키캡</b>으로 전환되었습니다!</p>
     <div class="ship">* 경품은 입력하신 배송지로 순차 발송됩니다<br>(주 1회 일괄 발송)</div>
     <button class="btn" onclick="hideEl('keycap-dim')">확인</button>
@@ -473,7 +520,7 @@ html,body{overflow-x:hidden;width:100%}
   <div class="ov-card"><div class="expert-card">
     <h3>빙고 완성!!</h3>
     <p>샤로수길을 제대로 즐기셨군요!<br>당신을 <b>샤로수길 전문가</b>로 인정합니다</p>
-    <div class="seal"><div class="s1">SHAROSU-GIL</div><div class="s2">샤로수길<br>전문가</div><div class="ribbon">🎖️</div></div>
+    <img class="seal-img" src="/assets/expert.png" alt="샤로수길 전문가 도장">
     <div class="gen-msg">럭키드로우 응모권 생성중<span class="gdots"></span></div>
   </div></div>
 </div>
@@ -634,7 +681,7 @@ function render(){
       c.onclick=function(){openPicker(i);};
     }else{
       var s=STORES[key];
-      var chk = stamped[i] ? '<div class="chk">✓</div>' : '';
+      var chk = stamped[i] ? '<div class="chk">✓</div><img class="stamp-img" src="/assets/stamp_sha.png" alt="">' : '';
       var icon = s.image ? '<img class="cimg" src="'+s.image+'" alt="">' : '<div class="cemo">'+s.emo+'</div>';
       c.innerHTML='<div class="inner">'+icon+'<div class="cname">'+s.name+'</div></div>'+chk;
       if(stamped[i]) c.className+=" stamped";
@@ -696,7 +743,7 @@ function openStore(key, idx){
     hint.textContent="이미 방문한 업체예요.";
   }else if(idx>=0){
     codeRow.style.display="block";
-    btn.textContent="쿠폰 발행받기"; btn.disabled=false;
+    btn.textContent="쿠폰 발행하기"; btn.disabled=false;
     hint.textContent="※ 결제 시 직원에게 이 화면을 보여주세요. 직원이 매장 인증 코드를 입력하면 쿠폰이 발행되고 스탬프가 찍힙니다.";
     btn.onclick=function(){redeem(key, idx);};
   }else{
@@ -719,12 +766,12 @@ function redeem(key, idx){
   .then(function(d){
     if(d.ok){ hideSheet(); stamp(idx, true); }
     else{
-      btn.disabled=false; btn.textContent="쿠폰 발행받기";
+      btn.disabled=false; btn.textContent="쿠폰 발행하기";
       shErr("코드가 올바르지 않아요. 매장 직원에게 확인해주세요.");
     }
   })
   .catch(function(){
-    btn.disabled=false; btn.textContent="쿠폰 발행받기";
+    btn.disabled=false; btn.textContent="쿠폰 발행하기";
     shErr("네트워크 오류예요. 잠시 후 다시 시도해주세요.");
   });
 }
@@ -807,7 +854,7 @@ function openGift(){
 
 /* ═══ 이펙트 ═══ */
 function confetti(){
-  var emos=["🎊","🎉","✨","💜","🍀","⭐","🩷"];
+  var emos=["🎊","🎉","✨","💙","💚","🍀","⭐"];
   for(var i=0;i<28;i++){
     var c=document.createElement("div"); c.className="confetti";
     c.textContent=emos[Math.floor(Math.random()*emos.length)];
