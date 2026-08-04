@@ -347,6 +347,13 @@ html,body{overflow-x:hidden;width:100%}
 .course .route{background:#EFF4E3;border:1.5px solid #57A24E;color:#2E6B34}
 .addr-note{color:#2E6B34;background:#EFF4E3;border-color:#BFD3A0}
 .secret-banner{display:none}
+/* ═══ 코스 탭 (빙고 페이지 내 코스 선택) ═══ */
+.course-tabs{display:flex;gap:8px;margin-bottom:10px}
+.ctab{flex:1;padding:12px 4px;border-radius:12px;border:2px solid #1B1B18;background:var(--paper);color:#8B8975;font-family:'Cafe24Ssurround','Pretendard Variable',sans-serif;font-size:13.5px;cursor:pointer;transition:.12s}
+.ctab:active{transform:scale(.96)}
+.ctab.on{background:var(--green);color:#fff;box-shadow:0 3px 0 rgba(27,27,24,.28)}
+.course-desc{font-size:12px;font-weight:700;color:#2E6B34;background:#EFF4E3;border:1.5px solid #57A24E;border-radius:10px;padding:8px 12px;text-align:center;margin-bottom:12px}
+@media(max-width:390px){.ctab{font-size:12px;padding:10px 2px}}
 </style>
 </head>
 <body>
@@ -425,8 +432,14 @@ html,body{overflow-x:hidden;width:100%}
 
 <!-- ═══ 4. 빙고 ═══ -->
 <section class="screen" id="bingo">
-  <div class="hdr"><div class="hdr-row"><button class="back" onclick="go('course')">←</button><div class="titles"><h2>빙고투어</h2><div class="subtit">참여업체 혜택받고 빙고에 도전하세요 ☺</div></div><div class="ticket-badge">🎟️<span id="tk-count">0</span>/8</div></div></div>
+  <div class="hdr"><div class="hdr-row"><button class="back" onclick="go('landing')">←</button><div class="titles"><h2>빙고투어</h2><div class="subtit">참여업체 혜택받고 빙고에 도전하세요 ☺</div></div><div class="ticket-badge">🎟️<span id="tk-count">0</span>/8</div></div></div>
   <div class="bingo-wrap">
+    <div class="course-tabs" id="course-tabs">
+      <button class="ctab" data-c="quit" onclick="selectCourse('quit')">퇴사 코스</button>
+      <button class="ctab" data-c="solo" onclick="selectCourse('solo')">혼자 코스</button>
+      <button class="ctab" data-c="date" onclick="selectCourse('date')">데이트 코스</button>
+    </div>
+    <div class="course-desc" id="course-desc"></div>
     <div class="board-frame"><div class="board" id="board"></div></div>
     <p class="notice">※ 빙고 한 줄을 완성할 때마다 럭키드로우 응모권이 자동 지급되며,<br>최대 8장까지 획득 가능합니다.</p>
     <div class="progress">
@@ -586,23 +599,34 @@ function checkForm(){
 }
 
 /* ═══ 게임 시작 ═══ */
+var COURSE_META={
+  quit:{route:"🔥 매운 음식 → 맥주 한잔 → 노래방"},
+  solo:{route:"🍚 혼밥 식당 → 카페 → 코인노래방"},
+  date:{route:"💛 이국적인 음식 → 카페 → 소품샵"}
+};
 function startBingo(m){
-  // 진행 중인 빙고가 있으면 초기화 여부 확인 (뒤로가기 후 재선택 보호)
-  var st=null; try{st=JSON.parse(localStorage.getItem('snl_state'))}catch(e){}
-  if(st&&st.stamped&&st.stamped.some(function(v){return v;})){
-    if(!confirm("진행 중인 빙고가 있어요!\n새 코스로 시작하면 기존 진행 상황이 초기화됩니다.\n\n[확인] 새로 시작  /  [취소] 이어하기")){
-      mode=st.mode||'solo'; board=st.board; stamped=st.stamped;
-      doneLines=st.doneLines||[]; tickets=st.tickets||0;
-      render(); go('bingo'); toast("이어서 진행합니다! 🍀");
-      return;
-    }
-  }
   mode=m;
   stamped=[false,false,false,false,false,false,false,false,false];
   doneLines=[]; tickets=0;
   board = (m==="free") ? [null,null,null,null,null,null,null,null,null] : COURSES[m].slice();
   render(); saveState(); go("bingo");
   toast(m==="free" ? "빈 칸을 눌러 업체를 배치해보세요!" : "코스가 빙고판에 채워졌어요!");
+}
+/* 빙고 페이지 상단 탭에서 코스 전환 */
+function selectCourse(m){
+  if(m===mode && board && board[0]){ return; }
+  if(stamped.some(function(v){return v;})){
+    if(!confirm("진행 중인 빙고가 있어요!\n다른 코스로 바꾸면 기존 진행 상황이 초기화됩니다.\n계속할까요?")){
+      updateTabs(); return;
+    }
+  }
+  startBingo(m);
+}
+function updateTabs(){
+  var tabs=document.querySelectorAll('#course-tabs .ctab');
+  for(var i=0;i<tabs.length;i++) tabs[i].classList.toggle('on', tabs[i].getAttribute('data-c')===mode);
+  var d=$('course-desc');
+  if(d) d.textContent = COURSE_META[mode] ? COURSE_META[mode].route : "원하는 코스 탭을 눌러 시작하세요";
 }
 
 /* ═══ 저장/복원 & 서버 연동 ═══ */
@@ -644,12 +668,16 @@ function registerUser(){
   }catch(e){}
   go('saveinfo');
 }
-/* 저장안내 → 진행상황 있으면 바로 빙고, 없으면 코스 선택 */
+/* 저장안내 → 진행상황 있으면 복원, 없으면 기본 코스로 빙고 시작 (코스는 빙고 페이지 탭에서 변경) */
 function afterSaveInfo(){
   var st=null; try{st=JSON.parse(localStorage.getItem('snl_state'))}catch(e){}
   if(st&&st.stamped&&st.stamped.some(function(v){return v;})&&applyState(st)){
     go('bingo'); toast("이전 진행 상황을 불러왔어요! 🍀");
-  }else go('course');
+  }else if(st&&st.board&&st.board[0]&&applyState(st)){
+    go('bingo');
+  }else{
+    startBingo('quit');
+  }
 }
 function restoreSession(){
   var u=getUser(); if(!u||!u.phone) return;
@@ -690,6 +718,7 @@ function render(){
     }
     b.appendChild(c);
   });
+  updateTabs();
   var sc=stamped.filter(Boolean).length;
   $("prog-stamp").textContent=sc+" / 9";
   $("prog-line").textContent=doneLines.length+" / 8";
