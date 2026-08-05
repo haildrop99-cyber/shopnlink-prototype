@@ -25,7 +25,7 @@
 .display, .hdr h2, .sec-title, .btn, .hero-title{font-family:'Cafe24Ssurround','Pretendard Variable',sans-serif;font-weight:normal}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
-body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;background:#E9DDE7;color:var(--ink);display:flex;justify-content:center;min-height:100vh}
+body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;background:#CFDFB5;color:var(--ink);display:flex;justify-content:center;min-height:100vh;word-break:keep-all;overflow-wrap:break-word}
 #phone{width:100%;max-width:420px;min-height:100vh;background:var(--bg);position:relative;overflow-x:hidden;box-shadow:0 0 48px rgba(90,30,80,.18)}
 .screen{display:none;min-height:100vh;flex-direction:column}
 .screen.active{display:flex}
@@ -313,7 +313,8 @@ html,body{overflow-x:hidden;width:100%}
 .cell.stamped .cname{color:#2E6B34}
 .cell .chk{background:var(--green)}
 .cell.line-done{border-color:#4C7FDE;box-shadow:0 0 0 2px rgba(76,127,222,.45), 0 4px 10px rgba(76,127,222,.25)}
-.stamp-img{position:absolute;inset:0;margin:auto;width:52px;height:52px;object-fit:contain;transform:rotate(-10deg);opacity:.93;pointer-events:none;animation:popin .35s cubic-bezier(.2,1.6,.4,1)}
+.stamp-img{position:absolute;inset:0;margin:auto;width:76px;height:76px;object-fit:contain;transform:rotate(-10deg);opacity:.95;pointer-events:none;animation:popin .35s cubic-bezier(.2,1.6,.4,1)}
+@media(max-width:390px){.stamp-img{width:62px;height:62px}}
 .keycap-note{background:#FFF9D9;border:2px solid #1B1B18;color:#5C5410}
 .field input,.consent,.code-row input{border-color:#1B1B18}
 .field input:focus,.code-row input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(87,162,78,.18)}
@@ -334,7 +335,7 @@ html,body{overflow-x:hidden;width:100%}
 .tk-visual-img img{width:100%;max-width:280px;display:block;margin:0 auto}
 .gift-card{border:2px solid #1B1B18}
 .gift-box img{width:110px;height:auto;display:block}
-.kc img{height:84px;width:auto}
+.kc img{height:130px;width:auto}
 .seal-img{width:132px;height:auto;display:block;margin:16px auto 6px;animation:stampIn .5s cubic-bezier(.2,1.6,.4,1) .3s both}
 .luck-card{border:2px solid #1B1B18}
 .expert-card h3{color:#2E6B34}
@@ -353,9 +354,18 @@ html,body{overflow-x:hidden;width:100%}
 .ctab:active{transform:scale(.96)}
 .ctab.on{background:var(--green);color:#fff;box-shadow:0 3px 0 rgba(27,27,24,.28)}
 .course-desc{font-size:12px;font-weight:700;color:#2E6B34;background:#EFF4E3;border:1.5px solid #57A24E;border-radius:10px;padding:8px 12px;text-align:center;margin-bottom:12px}
-/* 선택한 코스의 줄 하이라이트 (단일 빙고판) */
-.cell.row-hi{border-color:#E8A20C;box-shadow:0 0 0 3px rgba(232,162,12,.45)}
-.cell.row-hi.stamped{border-color:#2E6B34;box-shadow:0 0 0 3px rgba(232,162,12,.45)}
+/* 나만의 코스명 바 */
+.course-name-bar{font-family:'Cafe24Ssurround','Pretendard Variable',sans-serif;font-size:15px;color:#fff;background:var(--green);border:2px solid #1B1B18;border-radius:12px;padding:11px 14px;text-align:center;margin-bottom:12px;cursor:pointer;box-shadow:0 3px 0 rgba(27,27,24,.28)}
+.name-card h3{font-size:19px;line-height:1.4;font-family:'Cafe24Ssurround'}
+.name-card .nm-sub{font-size:13px;color:var(--gray);margin:10px 0 14px}
+.name-card input{width:100%;padding:14px;border:2px solid #1B1B18;border-radius:12px;font-size:15px;font-family:inherit;text-align:center;margin-bottom:14px;background:#FFFDF2}
+.name-card input:focus{outline:none;border-color:var(--green)}
+/* 카테고리 고정 칸 */
+.cell.catcell .inner{background:#EAF2FA}
+.cell.catcell .cname{color:#4C7FDE;font-weight:800}
+.cell .plus-mini{font-size:15px;color:#9AA5B5;font-weight:700;line-height:1}
+.change-store{font-size:12.5px;color:#4C7FDE;font-weight:800;text-align:center;margin:2px 0 12px;cursor:pointer;text-decoration:underline}
+.picker-cat-tag{font-size:11px;font-weight:800;color:#4C7FDE;background:#EAF2FA;border-radius:8px;padding:3px 8px;margin-left:6px}
 @media(max-width:390px){.ctab{font-size:12px;padding:10px 2px}}
 </style>
 </head>
@@ -365,11 +375,11 @@ html,body{overflow-x:hidden;width:100%}
 
 <!-- ═══ 1. 랜딩 ═══ -->
 <section class="screen active" id="landing">
-  <div class="hero-img"><img src="/assets/hero.png" alt="샤로수길 샵가능 빙고투어 — 먹고, 걷고, 혜택받고! 2026.08.10-09.11 샤로수길 전구역"></div>
+  <div class="hero-img"><img src="/assets/hero2.svg" alt="샤로수길 샵가능 빙고투어"></div>
   <div class="land-body">
     <div class="welcome">
       <span class="hello">샤로수길에 오신 여러분, 환영합니다! 🙌</span>
-      <b>8월 한 달간</b>, 샤로수길 곳곳에서 특별한 <b>빙고투어</b>가 진행됩니다.<br><br>
+      샤로수길에서만 즐길 수 있는 특별한 <b>빙고투어</b>가 진행됩니다.<br><br>
       대표 맛집부터 골목 속 숨은 가게까지, 원하는 곳을 방문하고 다양한 할인·증정 혜택을 받아보세요.<br><br>
       다양한 혜택을 받을수록 완성되는 빙고와 함께 여러분들을 기다리고 있는 <b>특별한 리워드</b>, 모든 빙고를 완성하면 <b>럭키드로우 응모까지!?</b>
     </div>
@@ -435,16 +445,11 @@ html,body{overflow-x:hidden;width:100%}
 
 <!-- ═══ 4. 빙고 ═══ -->
 <section class="screen" id="bingo">
-  <div class="hdr"><div class="hdr-row"><button class="back" onclick="go('landing')">←</button><div class="titles"><h2>빙고투어</h2><div class="subtit">참여업체 혜택받고 빙고에 도전하세요 ☺</div></div><div class="ticket-badge">🎟️<span id="tk-count">0</span>/8</div></div></div>
+  <div class="hdr"><div class="hdr-row"><button class="back" onclick="go('landing')">←</button><div class="titles"><h2>빙고투어</h2><div class="subtit">참여업체 혜택받고 빙고에 도전하세요 ☺</div></div><div class="ticket-badge">🎟️<span id="tk-count">0</span>장</div></div></div>
   <div class="bingo-wrap">
-    <div class="course-tabs" id="course-tabs">
-      <button class="ctab" data-c="solo" onclick="selectCourse('solo')">혼자 코스</button>
-      <button class="ctab" data-c="quit" onclick="selectCourse('quit')">퇴사 코스</button>
-      <button class="ctab" data-c="date" onclick="selectCourse('date')">데이트 코스</button>
-    </div>
-    <div class="course-desc" id="course-desc"></div>
+    <div class="course-name-bar" id="course-name-bar" onclick="editCourseName()">🚩 나만의 코스</div>
     <div class="board-frame"><div class="board" id="board"></div></div>
-    <p class="notice">※ 빙고 한 줄을 완성할 때마다 럭키드로우 응모권이 자동 지급되며,<br>최대 8장까지 획득 가능합니다.</p>
+    <p class="notice">※ 빙고 줄을 완성할 때마다 럭키드로우 응모권이 지급돼요.<br><b>첫 줄 1장 → 두 번째 줄 2장 → 세 번째 줄 3장…</b><br>줄을 완성할수록 응모권이 더 많아집니다!</p>
     <div class="progress">
       <div class="pbox"><div class="pl">스탬프</div><div class="pv" id="prog-stamp">0 / 9</div></div>
       <div class="pbox"><div class="pl">완성한 줄</div><div class="pv" id="prog-line">0 / 8</div></div>
@@ -465,9 +470,10 @@ html,body{overflow-x:hidden;width:100%}
     <div class="handle"></div>
     <div class="coupon">
       <div class="c-head"><div class="cemo" id="sh-emo"></div><div><div class="nm" id="sh-name"></div><div class="cat" id="sh-cat"></div></div></div>
-      <div class="c-body"><div class="cond" id="sh-cond"></div><div class="ben" id="sh-ben"></div><div class="perf"></div></div>
-      <div class="c-code"><div class="barcode"></div><div class="c-num" id="sh-code">SHOP-LINK-2026</div></div>
+      <div class="c-body"><div class="cond" id="sh-cond"></div><div class="ben" id="sh-ben"></div></div>
+      <span id="sh-code" style="display:none"></span>
     </div>
+    <p class="change-store" id="sh-change" onclick="changeStore()" style="display:none">↺ 다른 업체로 변경</p>
     <div class="code-row" id="sh-code-row">
       <label>매장 인증 코드</label>
       <input id="sh-code-input" maxlength="6" placeholder="직원이 입력해주세요" autocomplete="off" autocapitalize="characters" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
@@ -478,13 +484,23 @@ html,body{overflow-x:hidden;width:100%}
   </div>
 </div>
 
-<!-- 자율선택 피커 -->
+<!-- 업체 선택 피커 (자율 칸: 전체 / 카테고리 칸: 해당 업종만) -->
 <div class="dim" id="picker-dim" onclick="if(event.target===this)hideSheet()">
   <div class="sheet">
     <div class="handle"></div>
-    <h3 class="pick-t">빙고판에 넣을 업체 선택</h3>
+    <h3 class="pick-t" id="picker-title">빙고판에 넣을 업체 선택</h3>
     <div class="picker-list" id="picker-list"></div>
   </div>
+</div>
+
+<!-- 나만의 코스명 입력 -->
+<div class="overlay" id="name-dim">
+  <div class="ov-card"><div class="gift-card name-card">
+    <h3>내가 만드는<br>샤로수길 큐레이션 코스!</h3>
+    <p class="nm-sub">나만의 빙고투어 코스 이름을 정해 주세요.</p>
+    <input id="course-name-input" maxlength="20" placeholder="예: 퇴근 후 기분전환 코스">
+    <button class="btn" onclick="confirmCourseName()">확인</button>
+  </div></div>
 </div>
 
 <!-- 럭키티켓 오버레이 (다량 생성 시 한 장씩 응모) -->
@@ -602,41 +618,52 @@ function checkForm(){
 }
 
 /* ═══ 게임 시작 ═══ */
-/* ═══ 단일 빙고판: 줄마다 코스 배치 ═══
-   1줄(0-2) 혼자 / 2줄(3-5) 퇴사 / 3줄(6-8) 데이트 — 탭은 해당 줄 하이라이트 */
-var BOARD_FIXED=["embro","holly","star", "chili","junco","yoon", "eunh","kiko","wink"];
-var COURSE_ROWS={solo:[0,1,2], quit:[3,4,5], date:[6,7,8]};
-var COURSE_META={
-  solo:{route:"🍚 1줄 · 혼밥 식당 → 카페 → 코인노래방"},
-  quit:{route:"🔥 2줄 · 매운 음식 → 한잔 → 활력 충전"},
-  date:{route:"💛 3줄 · 일식 → 디저트 카페 → 소품샵"}
-};
-var activeCourse='solo';
+/* ═══ 자율 + 고정 칸 빙고판 (0805 확정) ═══
+   카테고리 고정 칸: 0=음식점, 5=카페 및 서비스, 7=술집 → 해당 업종 업체만 선택 가능
+   나머지 6칸: 전체 업체 중 자유 선택. 시작 시 나만의 코스명 입력 */
+var CELL_DEFS=[
+  {type:'cat', cat:'food', label:'음식점',        emo:'🍜'},
+  {type:'free'},{type:'free'},
+  {type:'free'},{type:'free'},
+  {type:'cat', cat:'cafe', label:'카페 및 서비스', emo:'☕'},
+  {type:'free'},
+  {type:'cat', cat:'bar',  label:'술집',          emo:'🍺'},
+  {type:'free'}
+];
+var CAT_LABELS={food:'음식점', cafe:'카페 및 서비스', bar:'술집'};
+/* 업체별 카테고리 — 업체 리스트 확정본 오면 여기만 수정 */
+var STORE_CATS={embro:'food',chili:'food',eunh:'food', junco:'bar', kiko:'cafe',holly:'cafe',yoon:'cafe',star:'cafe',wink:'cafe',remem:'cafe',barun:'cafe',theone:'cafe',mira:'cafe'};
+var courseName='';
+function escHtml(s){return String(s||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function initBoard(){
-  mode='mixed';
-  board=BOARD_FIXED.slice();
+  mode='custom';
+  board=[null,null,null,null,null,null,null,null,null];
   stamped=[false,false,false,false,false,false,false,false,false];
   doneLines=[]; tickets=0;
   render(); saveState();
 }
-function startBingo(m){ /* 구버전 호환용 — 단일판으로 시작 */
-  initBoard(); go("bingo");
+function startBingo(m){ initBoard(); go("bingo"); }
+/* 코스명 입력/수정 */
+function openNameModal(prefill){
+  $('course-name-input').value=prefill||'';
+  showEl('name-dim');
 }
-/* 코스 탭 = 해당 줄 하이라이트 (빙고판은 공용 한 판) */
-function selectCourse(m){
-  activeCourse=m; render();
+function confirmCourseName(){
+  var v=($('course-name-input').value||'').trim();
+  courseName = v || '나만의 샤로수길 코스';
+  hideEl('name-dim');
+  updateTabs(); saveState();
 }
+function editCourseName(){ openNameModal(courseName); }
 function updateTabs(){
-  var tabs=document.querySelectorAll('#course-tabs .ctab');
-  for(var i=0;i<tabs.length;i++) tabs[i].classList.toggle('on', tabs[i].getAttribute('data-c')===activeCourse);
-  var d=$('course-desc');
-  if(d) d.textContent = COURSE_META[activeCourse] ? COURSE_META[activeCourse].route : "";
+  var d=$('course-name-bar');
+  if(d) d.innerHTML='🚩 '+escHtml(courseName||'나만의 코스')+' <span style="font-size:11px;opacity:.85">(눌러서 이름 수정)</span>';
 }
 
 /* ═══ 저장/복원 & 서버 연동 ═══ */
 function getUser(){try{return JSON.parse(localStorage.getItem('snl_user'))}catch(e){return null}}
 function saveState(){
-  var payload=JSON.stringify({layout:'mixed1',mode:mode,board:board,stamped:stamped,doneLines:doneLines,tickets:tickets,keycapGiven:keycapGiven,v:Date.now()});
+  var payload=JSON.stringify({layout:'custom1',courseName:courseName,mode:mode,board:board,stamped:stamped,doneLines:doneLines,tickets:tickets,keycapGiven:keycapGiven,v:Date.now()});
   try{localStorage.setItem('snl_state',payload)}catch(e){}
   /* 서버에도 저장 (전화번호 기준) → 다른 기기에서 같은 번호로 등록 시 이어하기 */
   var u=getUser();
@@ -647,9 +674,10 @@ function saveState(){
 }
 function applyState(st){
   if(!st||!st.board||st.board.length!==9) return false;
-  if(st.layout!=='mixed1') return false; /* 구버전(코스별 3판) 상태는 무시하고 새 단일판으로 시작 */
-  mode=st.mode||'mixed'; board=st.board; stamped=st.stamped||[false,false,false,false,false,false,false,false,false];
+  if(st.layout!=='custom1') return false; /* 구버전 상태는 무시하고 새 자율판으로 시작 */
+  mode=st.mode||'custom'; board=st.board; stamped=st.stamped||[false,false,false,false,false,false,false,false,false];
   doneLines=st.doneLines||[]; tickets=st.tickets||0; keycapGiven=!!st.keycapGiven;
+  courseName=st.courseName||'';
   render(); return true;
 }
 function api(path,data){
@@ -673,14 +701,15 @@ function registerUser(){
   }catch(e){}
   go('saveinfo');
 }
-/* 저장안내 → 진행상황 있으면 복원, 없으면 새 빙고판으로 시작 */
+/* 저장안내 → 진행상황 있으면 복원, 없으면 코스명 입력 후 새 빙고판 */
 function afterSaveInfo(){
   var st=null; try{st=JSON.parse(localStorage.getItem('snl_state'))}catch(e){}
   if(st&&applyState(st)){
     go('bingo');
     if(st.stamped&&st.stamped.some(function(v){return v;})) toast("이전 진행 상황을 불러왔어요! 🍀");
+    if(!courseName) openNameModal('');
   }else{
-    initBoard(); go('bingo');
+    initBoard(); go('bingo'); openNameModal('');
   }
 }
 function restoreSession(){
@@ -691,9 +720,10 @@ function restoreSession(){
   if(st&&applyState(st)){
     go('bingo');
     toast(u.name+'님, 이어서 진행하세요! 🍀');
+    if(!courseName) openNameModal('');
   }else{
-    /* 구버전 상태이거나 상태 없음 → 새 단일판으로 시작 */
-    initBoard(); go('bingo');
+    /* 구버전 상태이거나 상태 없음 → 코스명 입력 후 새 자율판 */
+    initBoard(); go('bingo'); openNameModal('');
   }
 }
 
@@ -706,16 +736,21 @@ function render(){
   var b=$("board"); b.innerHTML="";
   board.forEach(function(key,i){
     var c=document.createElement("div"); c.className="cell";
+    var def=CELL_DEFS[i];
     if(!key){
       c.className+=" empty";
-      c.innerHTML='<div class="inner"><div class="plus">＋</div><div class="cname">업체 선택</div></div>';
+      if(def.type==='cat'){
+        c.className+=" catcell";
+        c.innerHTML='<div class="inner"><div class="plus-mini">＋</div><div class="cemo" style="filter:none;opacity:.85">'+def.emo+'</div><div class="cname">'+def.label+'</div></div>';
+      }else{
+        c.innerHTML='<div class="inner"><div class="plus">＋</div><div class="cname">업체 선택</div></div>';
+      }
       c.onclick=function(){openPicker(i);};
     }else{
       var s=STORES[key];
-      var chk = stamped[i] ? '<div class="chk">✓</div><img class="stamp-img" src="/assets/stamp_sha.png" alt="">' : '';
+      var chk = stamped[i] ? '<div class="chk">✓</div><img class="stamp-img" src="/assets/stamp_sha2.svg" alt="">' : '';
       var icon = s.image ? '<img class="cimg" src="'+s.image+'" alt="">' : '<div class="cemo">'+s.emo+'</div>';
       c.innerHTML='<div class="inner">'+icon+'<div class="cname">'+s.name+'</div></div>'+chk;
-      if(COURSE_ROWS[activeCourse]&&COURSE_ROWS[activeCourse].indexOf(i)>=0) c.className+=' row-hi';
       if(stamped[i]) c.className+=" stamped";
       if(stamped[i]&&isInDoneLine(i)) c.className+=" line-done";
       c.onclick=function(){openStore(key,i);};
@@ -746,16 +781,34 @@ function render(){
 /* ═══ 자율선택 피커 ═══ */
 function openPicker(idx){
   pickTarget=idx;
+  var def=CELL_DEFS[idx];
+  $("picker-title").innerHTML = def.type==='cat'
+    ? '빙고판에 넣을 업체 선택 <span class="picker-cat-tag">'+def.label+'</span>'
+    : '빙고판에 넣을 업체 선택';
   var pl=$("picker-list"); pl.innerHTML="";
+  var count=0;
   Object.keys(STORES).forEach(function(key){
     if(board.indexOf(key)>=0) return;
+    if(def.type==='cat' && STORE_CATS[key]!==def.cat) return; /* 카테고리 칸은 해당 업종만 노출 */
     var s=STORES[key];
     var d=document.createElement("div"); d.className="store";
-    d.innerHTML='<div class="semo">'+s.emo+'</div><div style="flex:1"><div class="sname">'+s.name+'</div><div class="sben">'+s.cond+' '+s.ben+'</div></div><span class="stat on">담기</span>';
-    d.onclick=function(){ board[pickTarget]=key; hideSheet(); clickSound(); render(); };
+    var sic = s.image ? '<img src="'+s.image+'" alt="">' : s.emo;
+    d.innerHTML='<div class="semo">'+sic+'</div><div style="flex:1"><div class="sname">'+s.name+'</div><div class="sben">'+s.cond+' '+s.ben+'</div></div><span class="stat on">담기</span>';
+    d.onclick=function(){ board[pickTarget]=key; hideSheet(); clickSound(); render(); saveState(); };
     pl.appendChild(d);
+    count++;
   });
+  if(count===0) pl.innerHTML='<div style="text-align:center;padding:26px;color:var(--gray);font-size:13px">선택 가능한 업체가 없어요.<br>다른 칸의 업체를 먼저 변경해 보세요.</div>';
   showEl("picker-dim");
+}
+/* 배치된 업체 변경 (스탬프 전에만) */
+var changeTarget=null;
+function changeStore(){
+  if(changeTarget===null) return;
+  var t=changeTarget; changeTarget=null;
+  board[t]=null;
+  hideSheet(); render(); saveState();
+  openPicker(t);
 }
 function hideSheet(){hideEl("sheet-dim");hideEl("picker-dim");}
 
@@ -768,21 +821,23 @@ function openStore(key, idx){
   $("sh-cond").textContent=s.cond;
   $("sh-ben").textContent=s.ben;
   $("sh-code").textContent="SHOPNLINK-2026-"+key.toUpperCase();
-  var btn=$("sh-btn"), hint=$("sh-hint"), codeRow=$("sh-code-row"), err=$("sh-err");
+  var btn=$("sh-btn"), hint=$("sh-hint"), codeRow=$("sh-code-row"), err=$("sh-err"), chg=$("sh-change");
   err.style.display="none"; $("sh-code-input").value="";
+  chg.style.display="none"; changeTarget=null;
   if(idx>=0 && stamped[idx]){
     codeRow.style.display="none";
     btn.textContent="스탬프 획득 완료 ✓"; btn.disabled=true; btn.onclick=null;
     hint.textContent="이미 방문한 업체예요.";
   }else if(idx>=0){
     codeRow.style.display="block";
+    chg.style.display="block"; changeTarget=idx;
     btn.textContent="쿠폰 발행하기"; btn.disabled=false;
     hint.textContent="※ 결제 시 직원에게 이 화면을 보여주세요. 직원이 매장 인증 코드를 입력하면 쿠폰이 발행되고 스탬프가 찍힙니다.";
     btn.onclick=function(){redeem(key, idx);};
   }else{
     codeRow.style.display="none";
     btn.textContent="빙고판에 없는 업체예요"; btn.disabled=true; btn.onclick=null;
-    hint.textContent = mode==="free" ? "빙고판의 빈 칸을 눌러 이 업체를 추가할 수 있어요." : "이번 코스에 포함되지 않은 업체입니다.";
+    hint.textContent="빙고판의 빈 칸을 눌러 이 업체를 추가할 수 있어요.";
   }
   showEl("sheet-dim");
 }
@@ -824,9 +879,11 @@ function stamp(idx, serverLogged){
   if(newly>0){
     if(u&&u.phone) api('event',{phone:u.phone,type:'bingo_line',detail:newly});
     if(u&&u.phone&&stamped.every(function(v){return v;})) api('event',{phone:u.phone,type:'bingo_all'});
-    pendingTickets=Math.min(newly, 8-tickets);
+    /* 0805 규칙: n번째로 완성한 줄 = n장 (1줄→1장, 2줄째→2장, 3줄째→3장…) */
+    var startOrd=doneLines.length-newly; /* 이번에 추가되기 전까지 완성했던 줄 수 */
+    pendingTickets=0;
+    for(var k=1;k<=newly;k++) pendingTickets+=(startOrd+k);
     batchLines=newly;
-    if(pendingTickets<=0){toast("응모권은 최대 8장까지 지급돼요!");return;}
     var all=stamped.every(Boolean);
     setTimeout(function(){
       if(all){
@@ -839,7 +896,7 @@ function stamp(idx, serverLogged){
 /* 응모권 한 장씩 응모하는 연출 (다량 생성 시 스택으로 표시) */
 function showTicket(){
   var n=pendingTickets;
-  $("tk-title").textContent = n>1 ? "응모권 "+n+"장 도착! 🎉" : (batchLines>1 ? "응모권 도착! 🎉" : "빙고 한 줄 완성! 🎉");
+  $("tk-title").textContent = n>1 ? "응모권 "+n+"장 도착! 🎉" : (doneLines.length>1 ? "응모권 도착! 🎉" : "빙고 한 줄 완성! 🎉");
   $("tk-label").textContent = "남은 응모권 "+n+"장";
   $("tk-num").textContent = "× 1";
   $("tk-g1").style.display = n>1 ? "block" : "none";
@@ -858,19 +915,11 @@ function submitTicket(){
     /* 다음 응모권으로 — 접수 연출 짧게 후 이어서 응모 */
     setTimeout(function(){ hideEl("done-dim"); showTicket(); },1100);
   }else{
-    /* 마지막 응모권 → 3·2·1 카운트다운 → 시크릿 경품 */
+    /* 마지막 응모권 → 접수 안내 3초 → 시크릿 굿즈 팝업 (최초 1회) */
     setTimeout(function(){
-      $("ld-stage1").style.display="none"; $("ld-stage2").style.display="block";
-      var n=3; $("cd-num").textContent=n;
-      var iv=setInterval(function(){
-        n--;
-        if(n<=0){
-          clearInterval(iv); hideEl("done-dim");
-          if(!keycapGiven) showGift(); // 시크릿 경품(키캡)은 최초 1회만
-        }
-        else $("cd-num").textContent=n;
-      },800);
-    },1300);
+      hideEl("done-dim");
+      if(!keycapGiven) showGift();
+    },3000);
   }
 }
 /* ═══ 시크릿 경품 (실물 키캡) — 최초 빙고 완성 시 1회만 지급 ═══ */

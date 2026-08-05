@@ -260,7 +260,8 @@ async function saveBoard(){
   var oldTickets=bmState.tickets||0;
   var oldLines=(bmState.doneLines||[]).length;
   bmState.doneLines=complete;
-  bmState.tickets=Math.min(complete.length, 8);
+  /* 0805 규칙: n번째 완성 줄 = n장 → 총 응모권 = 1+2+…+완성줄수 */
+  bmState.tickets=complete.length*(complete.length+1)/2;
   var tDelta=bmState.tickets-oldTickets;
   var lDelta=complete.length-oldLines;
   bmState.v=Date.now(); // 참여자 기기보다 최신으로 표시 → 자동 반영
