@@ -73,8 +73,15 @@ body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;backg
 .prize.first{grid-column:1/-1;background:linear-gradient(135deg,#FFF9E8,#FFF3D0);border-color:#F2DFA4}
 .prize .emo{font-size:36px}
 .prize.first .emo{font-size:44px}
-.pimg{height:64px;width:auto;max-width:100%;object-fit:contain}
-.pimg.big{height:96px}
+/* 상품 카드: 아이콘 → 순위 → 상품명 세로 스택 */
+.pimg{display:block;height:76px;width:auto;max-width:100%;object-fit:contain;margin:6px auto 14px}
+.pimg.big{height:118px;margin:10px auto 18px}
+.prize{padding:22px 14px 20px}
+.prize.first{padding:26px 14px 24px}
+.prize .rank{display:inline-block}
+.prize.first .rank{background:var(--green);color:#fff}
+.prize .name{margin-top:8px;font-size:14px}
+.prize.first .name{font-size:16.5px}
 .prize .rank{display:inline-block;font-size:10.5px;font-weight:800;color:#fff;background:var(--magenta);border-radius:20px;padding:3px 10px;margin-top:8px}
 .prize.first .rank{background:var(--gold);color:#5C4300}
 .prize .name{font-size:13.5px;font-weight:700;margin-top:6px;line-height:1.4}
@@ -315,7 +322,7 @@ html,body{overflow-x:hidden;width:100%}
 .cell.line-done{border-color:#4C7FDE;box-shadow:0 0 0 2px rgba(76,127,222,.45), 0 4px 10px rgba(76,127,222,.25)}
 .stamp-img{position:absolute;inset:0;margin:auto;width:76px;height:76px;object-fit:contain;transform:rotate(-10deg);opacity:.95;pointer-events:none;animation:popin .35s cubic-bezier(.2,1.6,.4,1)}
 @media(max-width:390px){.stamp-img{width:62px;height:62px}}
-.keycap-note{background:#FFF9D9;border:2px solid #1B1B18;color:#5C5410}
+.keycap-note{background:#D9E7F8;border:2px solid #1B1B18;color:#2C4A75}
 .field input,.consent,.code-row input{border-color:#1B1B18}
 .field input:focus,.code-row input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(87,162,78,.18)}
 .consent.on{border-color:var(--green);background:var(--pink-soft)}
