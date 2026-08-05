@@ -353,6 +353,9 @@ html,body{overflow-x:hidden;width:100%}
 .ctab:active{transform:scale(.96)}
 .ctab.on{background:var(--green);color:#fff;box-shadow:0 3px 0 rgba(27,27,24,.28)}
 .course-desc{font-size:12px;font-weight:700;color:#2E6B34;background:#EFF4E3;border:1.5px solid #57A24E;border-radius:10px;padding:8px 12px;text-align:center;margin-bottom:12px}
+/* 선택한 코스의 줄 하이라이트 (단일 빙고판) */
+.cell.row-hi{border-color:#E8A20C;box-shadow:0 0 0 3px rgba(232,162,12,.45)}
+.cell.row-hi.stamped{border-color:#2E6B34;box-shadow:0 0 0 3px rgba(232,162,12,.45)}
 @media(max-width:390px){.ctab{font-size:12px;padding:10px 2px}}
 </style>
 </head>
@@ -435,8 +438,8 @@ html,body{overflow-x:hidden;width:100%}
   <div class="hdr"><div class="hdr-row"><button class="back" onclick="go('landing')">←</button><div class="titles"><h2>빙고투어</h2><div class="subtit">참여업체 혜택받고 빙고에 도전하세요 ☺</div></div><div class="ticket-badge">🎟️<span id="tk-count">0</span>/8</div></div></div>
   <div class="bingo-wrap">
     <div class="course-tabs" id="course-tabs">
-      <button class="ctab" data-c="quit" onclick="selectCourse('quit')">퇴사 코스</button>
       <button class="ctab" data-c="solo" onclick="selectCourse('solo')">혼자 코스</button>
+      <button class="ctab" data-c="quit" onclick="selectCourse('quit')">퇴사 코스</button>
       <button class="ctab" data-c="date" onclick="selectCourse('date')">데이트 코스</button>
     </div>
     <div class="course-desc" id="course-desc"></div>
@@ -599,40 +602,41 @@ function checkForm(){
 }
 
 /* ═══ 게임 시작 ═══ */
+/* ═══ 단일 빙고판: 줄마다 코스 배치 ═══
+   1줄(0-2) 혼자 / 2줄(3-5) 퇴사 / 3줄(6-8) 데이트 — 탭은 해당 줄 하이라이트 */
+var BOARD_FIXED=["embro","holly","star", "chili","junco","yoon", "eunh","kiko","wink"];
+var COURSE_ROWS={solo:[0,1,2], quit:[3,4,5], date:[6,7,8]};
 var COURSE_META={
-  quit:{route:"🔥 매운 음식 → 맥주 한잔 → 노래방"},
-  solo:{route:"🍚 혼밥 식당 → 카페 → 코인노래방"},
-  date:{route:"💛 이국적인 음식 → 카페 → 소품샵"}
+  solo:{route:"🍚 1줄 · 혼밥 식당 → 카페 → 코인노래방"},
+  quit:{route:"🔥 2줄 · 매운 음식 → 한잔 → 활력 충전"},
+  date:{route:"💛 3줄 · 일식 → 디저트 카페 → 소품샵"}
 };
-function startBingo(m){
-  mode=m;
+var activeCourse='solo';
+function initBoard(){
+  mode='mixed';
+  board=BOARD_FIXED.slice();
   stamped=[false,false,false,false,false,false,false,false,false];
   doneLines=[]; tickets=0;
-  board = (m==="free") ? [null,null,null,null,null,null,null,null,null] : COURSES[m].slice();
-  render(); saveState(); go("bingo");
-  toast(m==="free" ? "빈 칸을 눌러 업체를 배치해보세요!" : "코스가 빙고판에 채워졌어요!");
+  render(); saveState();
 }
-/* 빙고 페이지 상단 탭에서 코스 전환 */
+function startBingo(m){ /* 구버전 호환용 — 단일판으로 시작 */
+  initBoard(); go("bingo");
+}
+/* 코스 탭 = 해당 줄 하이라이트 (빙고판은 공용 한 판) */
 function selectCourse(m){
-  if(m===mode && board && board[0]){ return; }
-  if(stamped.some(function(v){return v;})){
-    if(!confirm("진행 중인 빙고가 있어요!\n다른 코스로 바꾸면 기존 진행 상황이 초기화됩니다.\n계속할까요?")){
-      updateTabs(); return;
-    }
-  }
-  startBingo(m);
+  activeCourse=m; render();
 }
 function updateTabs(){
   var tabs=document.querySelectorAll('#course-tabs .ctab');
-  for(var i=0;i<tabs.length;i++) tabs[i].classList.toggle('on', tabs[i].getAttribute('data-c')===mode);
+  for(var i=0;i<tabs.length;i++) tabs[i].classList.toggle('on', tabs[i].getAttribute('data-c')===activeCourse);
   var d=$('course-desc');
-  if(d) d.textContent = COURSE_META[mode] ? COURSE_META[mode].route : "원하는 코스 탭을 눌러 시작하세요";
+  if(d) d.textContent = COURSE_META[activeCourse] ? COURSE_META[activeCourse].route : "";
 }
 
 /* ═══ 저장/복원 & 서버 연동 ═══ */
 function getUser(){try{return JSON.parse(localStorage.getItem('snl_user'))}catch(e){return null}}
 function saveState(){
-  var payload=JSON.stringify({mode:mode,board:board,stamped:stamped,doneLines:doneLines,tickets:tickets,keycapGiven:keycapGiven,v:Date.now()});
+  var payload=JSON.stringify({layout:'mixed1',mode:mode,board:board,stamped:stamped,doneLines:doneLines,tickets:tickets,keycapGiven:keycapGiven,v:Date.now()});
   try{localStorage.setItem('snl_state',payload)}catch(e){}
   /* 서버에도 저장 (전화번호 기준) → 다른 기기에서 같은 번호로 등록 시 이어하기 */
   var u=getUser();
@@ -643,7 +647,8 @@ function saveState(){
 }
 function applyState(st){
   if(!st||!st.board||st.board.length!==9) return false;
-  mode=st.mode||'solo'; board=st.board; stamped=st.stamped||[false,false,false,false,false,false,false,false,false];
+  if(st.layout!=='mixed1') return false; /* 구버전(코스별 3판) 상태는 무시하고 새 단일판으로 시작 */
+  mode=st.mode||'mixed'; board=st.board; stamped=st.stamped||[false,false,false,false,false,false,false,false,false];
   doneLines=st.doneLines||[]; tickets=st.tickets||0; keycapGiven=!!st.keycapGiven;
   render(); return true;
 }
@@ -668,15 +673,14 @@ function registerUser(){
   }catch(e){}
   go('saveinfo');
 }
-/* 저장안내 → 진행상황 있으면 복원, 없으면 기본 코스로 빙고 시작 (코스는 빙고 페이지 탭에서 변경) */
+/* 저장안내 → 진행상황 있으면 복원, 없으면 새 빙고판으로 시작 */
 function afterSaveInfo(){
   var st=null; try{st=JSON.parse(localStorage.getItem('snl_state'))}catch(e){}
-  if(st&&st.stamped&&st.stamped.some(function(v){return v;})&&applyState(st)){
-    go('bingo'); toast("이전 진행 상황을 불러왔어요! 🍀");
-  }else if(st&&st.board&&st.board[0]&&applyState(st)){
+  if(st&&applyState(st)){
     go('bingo');
+    if(st.stamped&&st.stamped.some(function(v){return v;})) toast("이전 진행 상황을 불러왔어요! 🍀");
   }else{
-    startBingo('quit');
+    initBoard(); go('bingo');
   }
 }
 function restoreSession(){
@@ -684,13 +688,12 @@ function restoreSession(){
   $('f-name').value=u.name||''; $('f-phone').value=u.phone||''; $('f-addr').value=u.address||'';
   $('f-agree').checked=true; checkForm();
   var st=null; try{st=JSON.parse(localStorage.getItem('snl_state'))}catch(e){}
-  if(st&&st.board&&st.board.length===9){
-    mode=st.mode||'free'; board=st.board; stamped=st.stamped||stamped;
-    doneLines=st.doneLines||[]; tickets=st.tickets||0; keycapGiven=!!st.keycapGiven;
-    render(); go('bingo');
+  if(st&&applyState(st)){
+    go('bingo');
     toast(u.name+'님, 이어서 진행하세요! 🍀');
   }else{
-    go('course');
+    /* 구버전 상태이거나 상태 없음 → 새 단일판으로 시작 */
+    initBoard(); go('bingo');
   }
 }
 
@@ -712,6 +715,7 @@ function render(){
       var chk = stamped[i] ? '<div class="chk">✓</div><img class="stamp-img" src="/assets/stamp_sha.png" alt="">' : '';
       var icon = s.image ? '<img class="cimg" src="'+s.image+'" alt="">' : '<div class="cemo">'+s.emo+'</div>';
       c.innerHTML='<div class="inner">'+icon+'<div class="cname">'+s.name+'</div></div>'+chk;
+      if(COURSE_ROWS[activeCourse]&&COURSE_ROWS[activeCourse].indexOf(i)>=0) c.className+=' row-hi';
       if(stamped[i]) c.className+=" stamped";
       if(stamped[i]&&isInDoneLine(i)) c.className+=" line-done";
       c.onclick=function(){openStore(key,i);};
