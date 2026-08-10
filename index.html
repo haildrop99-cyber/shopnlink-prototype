@@ -396,7 +396,7 @@ html.noscroll,body.noscroll{overflow:hidden !important}
 
 <!-- ═══ 1. 랜딩 ═══ -->
 <section class="screen active" id="landing">
-  <div class="hero-img"><img src="/assets/hero2.svg" alt="샤로수길 샵가능 빙고투어"></div>
+  <div class="hero-img"><img src="/assets/hero_final.svg" alt="샤로수길 샵가능 빙고투어"></div>
   <div class="land-body">
     <div class="welcome">
       <span class="hello">샤로수길에 오신 여러분, 환영합니다! 🙌</span>
@@ -1066,7 +1066,7 @@ function loadStores(){
     STORES=next; STORE_CATS=cats;
     board=board.map(function(k){ return (k&&k!=='__special__'&&!STORES[k]) ? null : k; });
     render();
-  }).catch(function(){});
+  }).catch(function(){ if(!window.__lsRetry){ window.__lsRetry=1; setTimeout(loadStores,1500); } });
 }
 /* 바텀시트: 핸들 탭 또는 아래로 드래그하면 닫힘 */
 (function(){
