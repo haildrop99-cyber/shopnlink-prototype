@@ -266,7 +266,7 @@ body{font-family:"Pretendard Variable",Pretendard,-apple-system,sans-serif;backg
 .tk-ghost{position:absolute;left:10px;right:10px;top:-8px;height:40px;background:#F0E4C8;border-radius:16px;z-index:-1;display:none}
 .tk-ghost.g2{left:20px;right:20px;top:-15px;background:#E6D8B4}
 .tk-count-label{font-size:12.5px;font-weight:800;color:var(--magenta-dark);background:var(--pink);border-radius:20px;display:inline-block;padding:5px 13px;margin-bottom:8px}
-/* ═══ 시크릿 경품 ═══ */
+/* ═══ 시크릿 굿즈 ═══ */
 .gift-card{background:#fff;border-radius:20px;padding:30px 24px;text-align:center;box-shadow:0 16px 44px rgba(0,0,0,.3)}
 .gift-card h3{font-size:21px;font-weight:900;color:var(--magenta-dark)}
 .gift-box{font-size:76px;display:inline-block;margin:16px 0 8px;cursor:pointer;animation:giftShake 1.1s infinite}
@@ -371,14 +371,20 @@ html,body{overflow-x:hidden;width:100%}
 .cell.catcell .inner{background:#EAF2FA}
 .cell.catcell .cname{color:#4C7FDE;font-weight:800}
 .cell .plus-mini{font-size:15px;color:#9AA5B5;font-weight:700;line-height:1}
-.change-store{font-size:12.5px;color:#4C7FDE;font-weight:800;text-align:center;margin:2px 0 12px;cursor:pointer;text-decoration:underline}
+.change-store{color:#C0392B !important;font-size:12.5px;color:#4C7FDE;font-weight:800;text-align:center;margin:2px 0 12px;cursor:pointer;text-decoration:underline}
+.cell.specialcell .inner{background:linear-gradient(150deg,#FFF6C9,#FDE68A)}
+.cell.specialcell{border-color:#C9A227;animation:spGlow 1.8s ease-in-out infinite}
+@keyframes spGlow{0%,100%{box-shadow:0 0 0 0 rgba(201,162,39,0)}50%{box-shadow:0 0 0 4px rgba(201,162,39,.35)}}
+.cell.specialcell .cname{color:#7A5C15}
+.cell.specialcell .sp-hint{font-size:8.5px;font-weight:800;color:#A67C0B;margin-top:1px}
+.cell.specialcell.stamped .inner{background:linear-gradient(150deg,#FFE79A,#F5C842)}
 .picker-cat-tag{font-size:11px;font-weight:800;color:#4C7FDE;background:#EAF2FA;border-radius:8px;padding:3px 8px;margin-left:6px}
 @media(max-width:390px){.ctab{font-size:12px;padding:10px 2px}}
 </style>
 </head>
 <body>
 <div id="phone">
-<div class="proto-tag">PROTOTYPE</div>
+
 
 <!-- ═══ 1. 랜딩 ═══ -->
 <section class="screen active" id="landing">
@@ -387,14 +393,14 @@ html,body{overflow-x:hidden;width:100%}
     <div class="welcome">
       <span class="hello">샤로수길에 오신 여러분, 환영합니다! 🙌</span>
       샤로수길에서만 즐길 수 있는 특별한 <b>빙고투어</b>가 진행됩니다.<br><br>
-      대표 맛집부터 골목 속 숨은 가게까지, 원하는 곳을 방문하고 다양한 할인·증정 혜택을 받아보세요.<br><br>
-      다양한 혜택을 받을수록 완성되는 빙고와 함께 여러분들을 기다리고 있는 <b>특별한 리워드</b>, 모든 빙고를 완성하면 <b>럭키드로우 응모까지!?</b>
+      맛집과 골목 속 숨은 매장을 방문하고 다양한 할인·증정 혜택을 받아보세요.<br><br>
+      혜택을 받을수록 완성되는 빙고와 함께 여러분을 기다리는 <b>시크릿 굿즈</b>와 <b>럭키드로우 응모까지!?</b>
     </div>
     <h2 class="sec-title">게임 소개</h2>
     <div class="steps">
-      <div class="step"><div class="num">STEP<span>1</span></div><div><h3>코스 선택</h3><p>취향에 맞는 큐레이션 코스 또는 자율 선택으로 빙고판 구성</p></div></div>
-      <div class="step"><div class="num">STEP<span>2</span></div><div><h3>스탬프 수집</h3><p>점포 방문 후 할인 쿠폰을 사용하여 결제 시 스탬프 획득</p></div></div>
-      <div class="step"><div class="num">STEP<span>3</span></div><div><h3>혜택 받기</h3><p>빙고 한 줄 완성 시 완주 굿즈 증정 + 럭키드로우 응모권 지급</p></div></div>
+      <div class="step"><div class="num">STEP<span>1</span></div><div><h3>코스 만들기</h3><p>나만의 샤로수길 빙고투어 코스 이름 만들기</p></div></div>
+      <div class="step"><div class="num">STEP<span>2</span></div><div><h3>스탬프 수집</h3><p>매장 방문 후 혜택을 받고 결제 시 스탬프 획득</p></div></div>
+      <div class="step"><div class="num">STEP<span>3</span></div><div><h3>선물 받기</h3><p>빙고 한 줄 완성 시 시크릿 굿즈 증정 + 럭키드로우 응모권 지급</p></div></div>
     </div>
     <h2 class="sec-title">럭키드로우 상품</h2>
     <div class="prizes">
@@ -404,7 +410,7 @@ html,body{overflow-x:hidden;width:100%}
       <div class="prize"><img class="pimg" src="/assets/prize_airfryer.png" alt=""><div class="rank">4등 · 4명</div><div class="name">네오메타<br>에어프라이어 5L</div></div>
       <div class="prize"><img class="pimg" src="/assets/prize_coupon.png" alt=""><div class="rank">5등 · 20명</div><div class="name">샤로수길 할인쿠폰<br>1만원권</div></div>
     </div>
-    <div class="keycap-note">🍀 빙고 한 줄을 완성할 때마다 럭키드로우 응모권이 자동 지급돼요. 최초 한 줄 완성 시 시크릿 경품(키캡)도 드립니다.</div>
+    <div class="keycap-note">🍀 빙고 한 줄을 완성할 때마다 럭키드로우 응모권이 자동 지급돼요. 최초 한 줄 완성 시 시크릿 굿즈를 드립니다.</div>
     <p class="today-q">오늘은 어디부터 즐겨볼까요?</p>
     <div class="cta-fix"><button class="btn" onclick="go('privacy')">샵가능 빙고투어 참여하기</button></div>
   </div>
@@ -446,13 +452,13 @@ html,body{overflow-x:hidden;width:100%}
     <div class="course" onclick="startBingo('solo')"><span class="tag">큐레이션 코스</span><h3>🍚 혼자라도 괜찮은 하루</h3><p>혼자여서 더 완벽한 하루, 눈치 볼 것 없이 즐기는 코스</p><div class="route">혼밥 식당 → 카페 → 코인노래방</div></div>
     <div class="course" onclick="startBingo('quit')"><span class="tag">큐레이션 코스</span><h3>🔥 오늘 퇴사하고 싶은 사람</h3><p>매운맛으로 스트레스 리셋, 시원하게 마무리하는 코스</p><div class="route">매운 음식 → 맥주 한잔 → 노래방</div></div>
     <div class="course" onclick="startBingo('date')"><span class="tag">큐레이션 코스</span><h3>💛 데이트 어디가지?</h3><p>고민은 그만, 걷기만 해도 코스가 완성되는 데이트</p><div class="route">이국적인 음식 → 카페 → 소품샵</div></div>
-    <div class="course free" style="display:none" onclick="startBingo('free')"><span class="tag">자율 선택</span><h3>🧩 내 맘대로 빙고판 채우기</h3><p>참여 업체 리스트에서 원하는 9곳을 골라 원하는 칸에 배치해요</p></div>
+    <div class="course free" style="display:none" onclick="startBingo('free')"><span class="tag">자율 선택</span><h3>🧩 내 맘대로 빙고판 채우기</h3><p>참여 매장 리스트에서 원하는 9곳을 골라 원하는 칸에 배치해요</p></div>
   </div>
 </section>
 
 <!-- ═══ 4. 빙고 ═══ -->
 <section class="screen" id="bingo">
-  <div class="hdr"><div class="hdr-row"><button class="back" onclick="go('landing')">←</button><div class="titles"><h2>빙고투어</h2><div class="subtit">참여업체 혜택받고 빙고에 도전하세요 ☺</div></div><div class="ticket-badge">🎟️<span id="tk-count">0</span>장</div></div></div>
+  <div class="hdr"><div class="hdr-row"><button class="back" onclick="go('landing')">←</button><div class="titles"><h2>빙고투어</h2><div class="subtit">참여 매장 혜택받고 빙고에 도전하세요 ☺</div></div><div class="ticket-badge">🎟️<span id="tk-count">0</span>장</div></div></div>
   <div class="bingo-wrap">
     <div class="course-name-bar" id="course-name-bar" onclick="editCourseName()">🚩 나만의 코스</div>
     <div class="board-frame"><div class="board" id="board"></div></div>
@@ -463,8 +469,8 @@ html,body{overflow-x:hidden;width:100%}
       <div class="pbox"><div class="pl">응모권</div><div class="pv" id="prog-tk">0장</div></div>
     </div>
     <div class="store-sec">
-      <h3>참여 업체 리스트</h3>
-      <p class="sub">업체를 탭하면 할인 쿠폰을 확인할 수 있어요</p>
+      <h3>참여 매장 리스트</h3>
+      <p class="sub">매장을 탭하면 혜택을 확인할 수 있어요</p>
       <div id="store-list"></div>
     </div>
   </div>
@@ -480,7 +486,7 @@ html,body{overflow-x:hidden;width:100%}
       <div class="c-body"><div class="cond" id="sh-cond"></div><div class="ben" id="sh-ben"></div></div>
       <span id="sh-code" style="display:none"></span>
     </div>
-    <p class="change-store" id="sh-change" onclick="changeStore()" style="display:none">↺ 다른 업체로 변경</p>
+    <p class="change-store" id="sh-change" onclick="changeStore()" style="display:none">🗑 담은 매장 지우기</p>
     <div class="code-row" id="sh-code-row">
       <label>매장 인증 코드</label>
       <input id="sh-code-input" maxlength="6" placeholder="직원이 입력해주세요" autocomplete="off" autocapitalize="characters" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
@@ -491,11 +497,11 @@ html,body{overflow-x:hidden;width:100%}
   </div>
 </div>
 
-<!-- 업체 선택 피커 (자율 칸: 전체 / 카테고리 칸: 해당 업종만) -->
+<!-- 매장 선택 피커 (자율 칸: 전체 / 카테고리 칸: 해당 업종만) -->
 <div class="dim" id="picker-dim" onclick="if(event.target===this)hideSheet()">
   <div class="sheet">
     <div class="handle"></div>
-    <h3 class="pick-t" id="picker-title">빙고판에 넣을 업체 선택</h3>
+    <h3 class="pick-t" id="picker-title">빙고판에 넣을 매장 선택</h3>
     <div class="picker-list" id="picker-list"></div>
   </div>
 </div>
@@ -524,16 +530,16 @@ html,body{overflow-x:hidden;width:100%}
   </div></div></div>
 </div>
 
-<!-- 시크릿 경품 도착 -->
+<!-- 시크릿 굿즈 도착 -->
 <div class="overlay" id="gift-dim">
   <div class="ov-card"><div class="gift-card">
-    <h3>시크릿 경품 도착!</h3>
-    <div class="gift-box" onclick="openGift()"><img src="/assets/gift.png" alt="시크릿 경품 선물상자"></div>
+    <h3>시크릿 굿즈 도착!</h3>
+    <div class="gift-box" onclick="openGift()"><img src="/assets/gift.png" alt="시크릿 굿즈 선물상자"></div>
     <div class="click-hint">CLICK!</div>
   </div></div>
 </div>
 
-<!-- 시크릿 경품 = 실물 키캡 안내 -->
+<!-- 시크릿 굿즈 = 실물 키캡 안내 -->
 <div class="overlay" id="keycap-dim">
   <div class="ov-card"><div class="gift-card keycap-msg">
     <h3>축하합니다! 🎉</h3>
@@ -564,7 +570,7 @@ html,body{overflow-x:hidden;width:100%}
   </div></div>
 </div>
 
-<a id="kakao-btn" href="https://kakaobusiness.gitbook.io/main" target="_blank" rel="noopener">💬 카톡 문의</a>
+<a id="kakao-btn" href="https://pf.kakao.com/_xejxfBX" target="_blank" rel="noopener">💬 카톡 문의</a>
 
 <div id="toast"></div>
 
@@ -629,24 +635,51 @@ function checkForm(){
    카테고리 고정 칸: 0=음식점, 5=카페 및 서비스, 7=술집 → 해당 업종 업체만 선택 가능
    나머지 6칸: 전체 업체 중 자유 선택. 시작 시 나만의 코스명 입력 */
 var CELL_DEFS=[
-  {type:'cat', cat:'food', label:'음식점',        emo:'🍜'},
+  {type:'cat', cat:'discount', label:'할인 제공 매장', emo:'🏷️'},
   {type:'free'},{type:'free'},
-  {type:'free'},{type:'free'},
-  {type:'cat', cat:'cafe', label:'카페 및 서비스', emo:'☕'},
   {type:'free'},
-  {type:'cat', cat:'bar',  label:'술집',          emo:'🍺'},
-  {type:'free'}
+  {type:'special', label:'스페셜', emo:'⭐'},
+  {type:'free'},
+  {type:'free'},{type:'free'},
+  {type:'cat', cat:'service', label:'서비스 제공 매장', emo:'🎁'}
 ];
-var CAT_LABELS={food:'음식점', cafe:'카페 및 서비스', bar:'술집'};
-/* 업체별 카테고리 — 업체 리스트 확정본 오면 여기만 수정 */
-var STORE_CATS={embro:'food',chili:'food',eunh:'food', junco:'bar', kiko:'cafe',holly:'cafe',yoon:'cafe',star:'cafe',wink:'cafe',remem:'cafe',barun:'cafe',theone:'cafe',mira:'cafe'};
-var courseName='';
+var CAT_LABELS={discount:'할인 제공 매장', service:'서비스 제공 매장'};
+var SPECIAL_WIN_RATE=0.3;
+var STORE_CATS={};
+var courseName='', specialUsed=false;
+function trySpecial(idx){
+  clickSound(); specialUsed=true;
+  if(Math.random() < SPECIAL_WIN_RATE){
+    board[idx]='__special__'; confetti(); render(); saveState();
+    var u=getUser(); if(u&&u.phone) api('event',{phone:u.phone,type:'special_win'});
+    toast('⭐ 스페셜 당첨! 스탬프가 바로 찍혔어요');
+    stampSpecial(idx);
+  }else{
+    render(); saveState();
+    toast('아쉽지만 이번엔 미당첨! 매장을 골라 채워주세요 🙌');
+    openPicker(idx);
+  }
+}
+function stampSpecial(idx){
+  stamped[idx]=true;
+  var newly=0;
+  LINES.forEach(function(line,li){ if(doneLines.indexOf(li)<0 && line.every(function(i){return stamped[i];})){ doneLines.push(li); newly++; } });
+  render(); saveState();
+  if(newly>0){
+    var u=getUser(); if(u&&u.phone) api('event',{phone:u.phone,type:'bingo_line',detail:newly});
+    var startOrd=doneLines.length-newly; pendingTickets=0;
+    for(var k=1;k<=newly;k++) pendingTickets+=(startOrd+k);
+    batchLines=newly;
+    var all=stamped.every(Boolean);
+    setTimeout(function(){ if(all){ confetti(); showEl('allclear-dim'); setTimeout(function(){ hideEl('allclear-dim'); showTicket(); },2200);} else showTicket(); },700);
+  }
+}
 function escHtml(s){return String(s||'').replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
 function initBoard(){
   mode='custom';
   board=[null,null,null,null,null,null,null,null,null];
   stamped=[false,false,false,false,false,false,false,false,false];
-  doneLines=[]; tickets=0;
+  doneLines=[]; tickets=0; specialUsed=false;
   render(); saveState();
 }
 function startBingo(m){ initBoard(); go("bingo"); }
@@ -670,7 +703,7 @@ function updateTabs(){
 /* ═══ 저장/복원 & 서버 연동 ═══ */
 function getUser(){try{return JSON.parse(localStorage.getItem('snl_user'))}catch(e){return null}}
 function saveState(){
-  var payload=JSON.stringify({layout:'custom1',courseName:courseName,mode:mode,board:board,stamped:stamped,doneLines:doneLines,tickets:tickets,keycapGiven:keycapGiven,v:Date.now()});
+  var payload=JSON.stringify({layout:'custom2',courseName:courseName,specialUsed:specialUsed,mode:mode,board:board,stamped:stamped,doneLines:doneLines,tickets:tickets,keycapGiven:keycapGiven,v:Date.now()});
   try{localStorage.setItem('snl_state',payload)}catch(e){}
   /* 서버에도 저장 (전화번호 기준) → 다른 기기에서 같은 번호로 등록 시 이어하기 */
   var u=getUser();
@@ -681,10 +714,10 @@ function saveState(){
 }
 function applyState(st){
   if(!st||!st.board||st.board.length!==9) return false;
-  if(st.layout!=='custom1') return false; /* 구버전 상태는 무시하고 새 자율판으로 시작 */
+  if(st.layout!=='custom2') return false; /* 구버전 상태는 무시하고 새 자율판으로 시작 */
   mode=st.mode||'custom'; board=st.board; stamped=st.stamped||[false,false,false,false,false,false,false,false,false];
   doneLines=st.doneLines||[]; tickets=st.tickets||0; keycapGiven=!!st.keycapGiven;
-  courseName=st.courseName||'';
+  courseName=st.courseName||''; specialUsed=!!st.specialUsed;
   render(); return true;
 }
 function api(path,data){
@@ -745,14 +778,24 @@ function render(){
     var c=document.createElement("div"); c.className="cell";
     var def=CELL_DEFS[i];
     if(!key){
-      c.className+=" empty";
-      if(def.type==='cat'){
-        c.className+=" catcell";
+      c.className+=' empty';
+      if(def.type==='special' && !specialUsed){
+        c.className+=' specialcell';
+        c.innerHTML='<div class="inner"><div class="cemo" style="filter:none">⭐</div><div class="cname">스페셜</div><div class="sp-hint">눌러보세요!</div></div>';
+        c.onclick=function(){trySpecial(i);};
+      }else if(def.type==='cat'){
+        c.className+=' catcell';
         c.innerHTML='<div class="inner"><div class="plus-mini">＋</div><div class="cemo" style="filter:none;opacity:.85">'+def.emo+'</div><div class="cname">'+def.label+'</div></div>';
+        c.onclick=function(){openPicker(i);};
       }else{
-        c.innerHTML='<div class="inner"><div class="plus">＋</div><div class="cname">업체 선택</div></div>';
+        c.innerHTML='<div class="inner"><div class="plus">＋</div><div class="cname">매장 선택</div></div>';
+        c.onclick=function(){openPicker(i);};
       }
-      c.onclick=function(){openPicker(i);};
+    }else if(key==='__special__'){
+      c.className+=' stamped specialcell';
+      c.innerHTML='<div class="inner"><div class="cemo" style="filter:none">⭐</div><div class="cname">스페셜 당첨</div></div><div class="chk">✓</div><img class="stamp-img" src="/assets/stamp_sha2.svg" alt="">';
+      if(isInDoneLine(i)) c.className+=' line-done';
+      c.onclick=function(){toast('스페셜 칸 당첨으로 스탬프를 받았어요! ⭐');};
     }else{
       var s=STORES[key];
       var chk = stamped[i] ? '<div class="chk">✓</div><img class="stamp-img" src="/assets/stamp_sha2.svg" alt="">' : '';
@@ -790,8 +833,8 @@ function openPicker(idx){
   pickTarget=idx;
   var def=CELL_DEFS[idx];
   $("picker-title").innerHTML = def.type==='cat'
-    ? '빙고판에 넣을 업체 선택 <span class="picker-cat-tag">'+def.label+'</span>'
-    : '빙고판에 넣을 업체 선택';
+    ? '빙고판에 넣을 매장 선택 <span class="picker-cat-tag">'+def.label+'</span>'
+    : '빙고판에 넣을 매장 선택';
   var pl=$("picker-list"); pl.innerHTML="";
   var count=0;
   Object.keys(STORES).forEach(function(key){
@@ -805,7 +848,7 @@ function openPicker(idx){
     pl.appendChild(d);
     count++;
   });
-  if(count===0) pl.innerHTML='<div style="text-align:center;padding:26px;color:var(--gray);font-size:13px">선택 가능한 업체가 없어요.<br>다른 칸의 업체를 먼저 변경해 보세요.</div>';
+  if(count===0) pl.innerHTML='<div style="text-align:center;padding:26px;color:var(--gray);font-size:13px">선택 가능한 매장이 없어요.<br>다른 칸의 매장을 먼저 지워보세요.</div>';
   showEl("picker-dim");
 }
 /* 배치된 업체 변경 (스탬프 전에만) */
@@ -834,7 +877,7 @@ function openStore(key, idx){
   if(idx>=0 && stamped[idx]){
     codeRow.style.display="none";
     btn.textContent="스탬프 획득 완료 ✓"; btn.disabled=true; btn.onclick=null;
-    hint.textContent="이미 방문한 업체예요.";
+    hint.textContent="이미 방문한 매장이에요.";
   }else if(idx>=0){
     codeRow.style.display="block";
     chg.style.display="block"; changeTarget=idx;
@@ -843,8 +886,8 @@ function openStore(key, idx){
     btn.onclick=function(){redeem(key, idx);};
   }else{
     codeRow.style.display="none";
-    btn.textContent="빙고판에 없는 업체예요"; btn.disabled=true; btn.onclick=null;
-    hint.textContent="빙고판의 빈 칸을 눌러 이 업체를 추가할 수 있어요.";
+    btn.textContent="빙고판에 없는 매장이에요"; btn.disabled=true; btn.onclick=null;
+    hint.textContent="빙고판의 빈 칸을 눌러 이 매장을 추가할 수 있어요.";
   }
   showEl("sheet-dim");
 }
@@ -929,7 +972,7 @@ function submitTicket(){
     },3000);
   }
 }
-/* ═══ 시크릿 경품 (실물 키캡) — 최초 빙고 완성 시 1회만 지급 ═══ */
+/* ═══ 시크릿 굿즈 (실물 키캡) — 최초 빙고 완성 시 1회만 지급 ═══ */
 function showGift(){ showEl("gift-dim"); }
 function openGift(){
   clickSound(); confetti();
@@ -988,15 +1031,14 @@ document.addEventListener('visibilitychange',function(){ if(!document.hidden) sy
 /* 서버에서 업체 정보(이미지·쿠폰명 등) 로드 — 관리자 페이지에서 수정한 내용 반영 */
 function loadStores(){
   fetch('/api/stores').then(function(r){return r.json();}).then(function(d){
-    if(!d.stores) return;
+    if(!d.stores||!d.stores.length) return;
+    var next={}, cats={};
     d.stores.forEach(function(s){
-      var t=STORES[s.key]; if(!t) return;
-      if(s.name) t.name=s.name;
-      if(s.cat) t.cat=s.cat;
-      if(s.cond) t.cond=s.cond;
-      if(s.coupon_name) t.ben=s.coupon_name;
-      t.image=s.image||null;
+      next[s.key]={name:s.name,emo:s.emoji||'🏪',cat:s.cat||'',cond:s.cond||'',ben:s.coupon_name||'',image:s.image||null};
+      cats[s.key]=(s.cond||'').indexOf('할인')>=0 ? 'discount' : 'service';
     });
+    STORES=next; STORE_CATS=cats;
+    board=board.map(function(k){ return (k&&k!=='__special__'&&!STORES[k]) ? null : k; });
     render();
   }).catch(function(){});
 }
