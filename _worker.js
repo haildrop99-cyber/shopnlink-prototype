@@ -106,6 +106,17 @@ async function handleApi(request, env, url) {
       return json({ stores: rows.results });
     }
 
+    // 매장 목록 일괄 교체
+    if (p === '/api/admin/stores/replace' && request.method === 'POST') {
+      const { stores } = await request.json();
+      if (!Array.isArray(stores) || !stores.length) return json({ error: 'stores required' }, 400);
+      await env.DB.prepare(`DELETE FROM stores`).run();
+      const stmt = env.DB.prepare(`INSERT INTO stores (key,name,cat,cond,coupon_name,emoji,image,code) VALUES (?1,?2,?3,?4,?5,?6,?7,?8)`);
+      const batch = stores.map(s => stmt.bind(s.key, s.name, s.cat || '', s.cond || '', s.coupon_name || '', s.emoji || '🏪', s.image || '', String(s.code || '').toUpperCase()));
+      await env.DB.batch(batch);
+      return json({ ok: true, count: stores.length });
+    }
+
     // 업체 정보 수정 (쿠폰명·조건·이미지·코드)
     if (p === '/api/admin/store/update' && request.method === 'POST') {
       const { key, name, cond, coupon_name, image, code } = await request.json();
