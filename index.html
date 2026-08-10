@@ -378,6 +378,14 @@ html,body{overflow-x:hidden;width:100%}
 .cell.specialcell .cname{color:#7A5C15}
 .cell.specialcell .sp-hint{font-size:8.5px;font-weight:800;color:#A67C0B;margin-top:1px}
 .cell.specialcell.stamped .inner{background:linear-gradient(150deg,#FFE79A,#F5C842)}
+html.noscroll,body.noscroll{overflow:hidden !important}
+.sheet{overscroll-behavior:contain}
+.picker-list{overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.sheet .handle{cursor:pointer;width:64px;height:6px;margin:2px auto 14px;position:relative}
+.sheet .handle::after{content:"";position:absolute;left:-40px;right:-40px;top:-14px;bottom:-14px}
+.sp-card .sp-emo{font-size:62px;line-height:1}
+.sp-card .sp-emo img{width:104px;height:104px;object-fit:contain}
+.sp-card p{font-size:13.5px;color:#54474F;line-height:1.7;margin:10px 0 16px}
 .picker-cat-tag{font-size:11px;font-weight:800;color:#4C7FDE;background:#EAF2FA;border-radius:8px;padding:3px 8px;margin-left:6px}
 @media(max-width:390px){.ctab{font-size:12px;padding:10px 2px}}
 </style>
@@ -572,6 +580,15 @@ html,body{overflow-x:hidden;width:100%}
 
 <a id="kakao-btn" href="https://pf.kakao.com/_xejxfBX" target="_blank" rel="noopener">💬 카톡 문의</a>
 
+<div class="overlay" id="sp-dim">
+  <div class="ov-card"><div class="gift-card sp-card">
+    <div class="sp-emo" id="sp-emo">⭐</div>
+    <h3 id="sp-title">스페셜 당첨!</h3>
+    <p id="sp-desc"></p>
+    <button class="btn" id="sp-btn" onclick="confirmSpecial()">확인</button>
+  </div></div>
+</div>
+
 <div id="toast"></div>
 
 <script>
@@ -609,8 +626,9 @@ function go(id){
   for(var i=0;i<s.length;i++) s[i].classList.remove("active");
   $(id).classList.add("active"); window.scrollTo(0,0);
 }
-function hideEl(id){$(id).classList.remove("show");}
-function showEl(id){$(id).classList.add("show");}
+function syncLock(){var open=document.querySelectorAll(".dim.show, .overlay.show").length>0;document.documentElement.classList.toggle("noscroll",open);document.body.classList.toggle("noscroll",open);}
+function hideEl(id){$(id).classList.remove("show"); syncLock();}
+function showEl(id){$(id).classList.add("show"); syncLock();}
 function toast(msg){
   var t=$("toast"); t.textContent=msg; t.style.display="block";
   clearTimeout(t._h); t._h=setTimeout(function(){t.style.display="none";},2200);
@@ -647,17 +665,25 @@ var CAT_LABELS={discount:'할인 제공 매장', service:'서비스 제공 매�
 var SPECIAL_WIN_RATE=0.3;
 var STORE_CATS={};
 var courseName='', specialUsed=false;
+var spWin=false, spIdx=null;
 function trySpecial(idx){
-  clickSound(); specialUsed=true;
-  if(Math.random() < SPECIAL_WIN_RATE){
-    board[idx]='__special__'; confetti(); render(); saveState();
-    var u=getUser(); if(u&&u.phone) api('event',{phone:u.phone,type:'special_win'});
-    toast('⭐ 스페셜 당첨! 스탬프가 바로 찍혔어요');
-    stampSpecial(idx);
+  clickSound(); spIdx=idx; specialUsed=true;
+  spWin = Math.random() < SPECIAL_WIN_RATE;
+  $("sp-emo").innerHTML = spWin ? '<img src="/assets/stamp_sha2.svg" alt="">' : "🎯";
+  $("sp-title").textContent = spWin ? "스페셜 당첨! 🎉" : "아쉽지만 이번엔 꽝!";
+  $("sp-desc").innerHTML = spWin ? "축하합니다! 방문 없이<br>스탬프가 바로 찍혀요." : "이 칸은 매장을 골라<br>방문 후 스탬프를 받아주세요.";
+  $("sp-btn").textContent = spWin ? "스탬프 받기" : "매장 고르러 가기";
+  if(spWin) confetti();
+  showEl("sp-dim");
+}
+function confirmSpecial(){
+  hideEl("sp-dim");
+  if(spWin){
+    board[spIdx]="__special__"; render(); saveState();
+    var u=getUser(); if(u&&u.phone) api("event",{phone:u.phone,type:"special_win"});
+    stampSpecial(spIdx);
   }else{
-    render(); saveState();
-    toast('아쉽지만 이번엔 미당첨! 매장을 골라 채워주세요 🙌');
-    openPicker(idx);
+    render(); saveState(); openPicker(spIdx);
   }
 }
 function stampSpecial(idx){
@@ -1042,6 +1068,27 @@ function loadStores(){
     render();
   }).catch(function(){});
 }
+/* 바텀시트: 핸들 탭 또는 아래로 드래그하면 닫힘 */
+(function(){
+  var hs=document.querySelectorAll(".sheet .handle");
+  for(var i=0;i<hs.length;i++){
+    (function(h){
+      h.addEventListener("click", hideSheet);
+      var y0=null;
+      h.addEventListener("touchstart",function(e){y0=e.touches[0].clientY;},{passive:true});
+      h.addEventListener("touchmove",function(e){ if(y0!==null && e.touches[0].clientY-y0>30){ hideSheet(); y0=null; } },{passive:true});
+    })(hs[i]);
+  }
+  var ss=document.querySelectorAll(".sheet");
+  for(var j=0;j<ss.length;j++){
+    (function(s){
+      var sy=null;
+      s.addEventListener("touchstart",function(e){ sy=(s.scrollTop<=0)?e.touches[0].clientY:null; },{passive:true});
+      s.addEventListener("touchmove",function(e){ if(sy!==null && e.touches[0].clientY-sy>90){ hideSheet(); sy=null; } },{passive:true});
+      s.addEventListener("touchend",function(){ sy=null; },{passive:true});
+    })(ss[j]);
+  }
+})();
 render();
 restoreSession();
 loadStores();
