@@ -884,7 +884,7 @@ function changeStore(){
   var t=changeTarget; changeTarget=null;
   board[t]=null;
   hideSheet(); render(); saveState();
-  openPicker(t);
+  toast("담은 매장을 지웠어요! 빈 칸을 눌러 새 매장을 골라주세요");
 }
 function hideSheet(){hideEl("sheet-dim");hideEl("picker-dim");}
 
