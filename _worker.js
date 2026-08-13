@@ -121,7 +121,7 @@ async function handleApi(request, env, url) {
     if (p === '/api/admin/store/update' && request.method === 'POST') {
       const { key, name, cond, coupon_name, image, code } = await request.json();
       if (!key) return json({ error: 'key required' }, 400);
-      if (code !== undefined && String(code).trim().length !== 6) return json({ error: 'code must be 6 chars' }, 400);
+      if (code !== undefined && String(code).trim().length !== 4) return json({ error: 'code must be 4 digits' }, 400);
       await env.DB.prepare(
         `UPDATE stores SET
            name = COALESCE(?2, name),
