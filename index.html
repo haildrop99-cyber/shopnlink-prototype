@@ -788,16 +788,20 @@ function afterSaveInfo(){
 }
 function restoreSession(){
   var u=getUser(); if(!u||!u.phone) return;
-  $('f-name').value=u.name||''; $('f-phone').value=u.phone||''; $('f-addr').value=u.address||'';
-  $('f-agree').checked=true; checkForm();
-  var st=null; try{st=JSON.parse(localStorage.getItem('snl_state'))}catch(e){}
-  if(st&&applyState(st)){
-    go('bingo');
-    toast(u.name+'님, 이어서 진행하세요! 🍀');
-    if(!courseName) openNameModal('');
+  try{
+    $("f-name").value=u.name||""; $("f-phone").value=u.phone||""; $("f-addr").value=u.address||"";
+    $("f-agree").checked=true; checkForm();
+  }catch(e){}
+  var st=null; try{st=JSON.parse(localStorage.getItem("snl_state"))}catch(e){}
+  var ok=false;
+  try{ ok = !!(st && applyState(st)); }catch(e){ ok = !!(st && st.layout==="custom2" && st.board); }
+  if(ok){
+    go("bingo");
+    toast(u.name+"님, 이어서 진행하세요! 🍀");
+    if(!courseName) openNameModal("");
   }else{
-    /* 구버전 상태이거나 상태 없음 → 코스명 입력 후 새 자율판 */
-    initBoard(); go('bingo'); openNameModal('');
+    try{ initBoard(); }catch(e){}
+    go("bingo"); openNameModal("");
   }
 }
 
@@ -830,6 +834,10 @@ function render(){
       c.innerHTML='<div class="inner"><div class="cemo" style="filter:none">⭐</div><div class="cname">스페셜 당첨</div></div><div class="chk">✓</div><img class="stamp-img" src="/assets/stamp_sha2.svg" alt="">';
       if(isInDoneLine(i)) c.className+=' line-done';
       c.onclick=function(){toast('스페셜 칸 당첨으로 스탬프를 받았어요! ⭐');};
+    }else if(!STORES[key]){
+      c.className+=' empty';
+      c.innerHTML='<div class="inner"><div class="cname">불러오는 중…</div></div>';
+      b.appendChild(c); return;
     }else{
       var s=STORES[key];
       var chk = stamped[i] ? '<div class="chk">✓</div><img class="stamp-img" src="/assets/stamp_sha2.svg" alt="">' : '';
@@ -899,6 +907,7 @@ function hideSheet(){hideEl("sheet-dim");hideEl("picker-dim");}
 /* ═══ 쿠폰 시트 ═══ */
 function openStore(key, idx){
   var s=STORES[key];
+  if(!s){ toast("매장 정보를 불러오는 중이에요. 잠시 후 다시 눌러주세요"); loadStores(); return; }
   $("sh-emo").innerHTML = s.image ? '<img src="'+s.image+'" alt="">' : s.emo;
   $("sh-name").textContent=s.name;
   $("sh-cat").textContent=s.cat;
@@ -1074,7 +1083,7 @@ function loadStores(){
     STORES=next; STORE_CATS=cats;
     board=board.map(function(k){ return (k&&k!=='__special__'&&!STORES[k]) ? null : k; });
     render();
-  }).catch(function(){ if(!window.__lsRetry){ window.__lsRetry=1; setTimeout(loadStores,1500); } });
+  }).catch(function(){ window.__lsRetry=(window.__lsRetry||0)+1; if(window.__lsRetry<=5) setTimeout(loadStores,1500); });
 }
 /* 바텀시트: 핸들 탭·드래그로만 닫힘 (리스트 스크롤과 분리) */
 (function(){
@@ -1124,8 +1133,8 @@ function loadStores(){
   }
 })();
 render();
-restoreSession();
 loadStores();
+restoreSession();
 syncFromServer();
 </script>
 </body>
