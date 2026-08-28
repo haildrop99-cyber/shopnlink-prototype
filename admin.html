@@ -206,7 +206,8 @@ function renderTables(){
   $g('tb-users').innerHTML=us.map(function(u){
     var lv=userLive(u);
     return '<tr><td><b>'+esc(u.name)+'</b></td><td>'+esc(u.phone)+'</td><td>'+esc(u.address)+'</td><td>'+lv.stamps+'/9</td><td>'+lv.lines+'</td><td>'+lv.tickets+'장</td><td>'+esc(u.created_at)+'</td><td>'+esc(u.last_seen)+'</td>'+
-      '<td><a href="#" onclick="openBoard(\''+esc(u.phone)+'\');return false" style="color:var(--magenta-dark);font-weight:700;margin-right:8px">빙고판</a>'+
+      '<td><a href="#" onclick="editTickets(\''+esc(u.phone)+'\');return false" style="color:#2E6B34;font-weight:700;margin-right:8px">응모권</a>'+
+      '<a href="#" onclick="openBoard(\''+esc(u.phone)+'\');return false" style="color:var(--magenta-dark);font-weight:700;margin-right:8px">빙고판</a>'+
       '<a href="#" onclick="editUser(\''+esc(u.phone)+'\');return false" style="color:var(--magenta);font-weight:700;margin-right:8px">수정</a>'+
       '<a href="#" onclick="delUser(\''+esc(u.phone)+'\');return false" style="color:var(--red);font-weight:700">삭제</a></td></tr>';
   }).join('');
@@ -229,6 +230,7 @@ async function openBoard(phone){
   if(!bmState||!bmState.board||bmState.board.length!==9){alert('진행 중인 빙고가 없습니다.');return;}
   if(!bmState.stamped||bmState.stamped.length!==9) bmState.stamped=[false,false,false,false,false,false,false,false,false];
   bmPhone=phone;
+  window.__bmOldStamps=bmState.stamped.filter(Boolean).length;
   $g('bm-title').textContent=u.name+' ('+phone+') 빙고판 수정';
   renderBM();
   $g('board-modal').style.display='flex';
@@ -260,8 +262,11 @@ async function saveBoard(){
   var oldTickets=bmState.tickets||0;
   var oldLines=(bmState.doneLines||[]).length;
   bmState.doneLines=complete;
-  /* 0805 규칙: n번째 완성 줄 = n장 → 총 응모권 = 1+2+…+완성줄수 */
-  bmState.tickets=complete.length*(complete.length+1)/2;
+  /* 응모권 규칙: 스탬프 1개 = 1장 → 스탬프 증감분만큼 조정 (수동 조정값 보존) */
+  var oldStamps=(window.__bmOldStamps==null)?0:window.__bmOldStamps;
+  var newStamps=bmState.stamped.filter(Boolean).length;
+  bmState.doneLines=complete;
+  bmState.tickets=Math.max(0,(bmState.tickets||0)+(newStamps-oldStamps));
   var tDelta=bmState.tickets-oldTickets;
   var lDelta=complete.length-oldLines;
   bmState.v=Date.now(); // 참여자 기기보다 최신으로 표시 → 자동 반영
@@ -270,10 +275,31 @@ async function saveBoard(){
     /* 통계 일관성: 증감분을 이벤트로 기록 (음수 = 회수) */
     if(lDelta!==0) fetch('/api/event',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({phone:bmPhone,type:'bingo_line',detail:lDelta})}).catch(function(){});
     if(tDelta!==0) fetch('/api/event',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({phone:bmPhone,type:'ticket',detail:tDelta})}).catch(function(){});
-    if(tDelta>0) alert('빙고 줄 완성 → 응모권 '+tDelta+'장 자동 추가 (총 '+bmState.tickets+'장)');
-    else if(tDelta<0) alert('빙고 줄 해제 → 응모권 '+(-tDelta)+'장 회수 (총 '+bmState.tickets+'장)');
+    if(tDelta>0) alert('스탬프 추가 → 응모권 '+tDelta+'장 지급 (총 '+bmState.tickets+'장)');
+    else if(tDelta<0) alert('스탬프 삭제 → 응모권 '+(-tDelta)+'장 회수 (총 '+bmState.tickets+'장)');
     closeBoard(); setTimeout(load,600);
   } else alert('저장 실패: '+r.status);
+}
+
+/* 응모권 수량 직접 조정 */
+async function editTickets(phone){
+  var u=DATA.users.find(function(x){return x.phone===phone;});
+  if(!u) return;
+  var cur=userLive(u).tickets||0;
+  var v=prompt(u.name+" 님의 응모권 수량을 입력하세요 (숫자)", cur);
+  if(v===null) return;
+  var n=parseInt(String(v).trim(),10);
+  if(isNaN(n)||n<0){ alert("0 이상의 숫자를 입력해주세요."); return; }
+  var st=null; try{ st=JSON.parse(u.state||"null"); }catch(e){}
+  if(!st||!st.board){ st={layout:"custom2",courseName:"",specialUsed:false,mode:"custom",board:[null,null,null,null,null,null,null,null,null],stamped:[false,false,false,false,false,false,false,false,false],doneLines:[],keycapGiven:false}; }
+  st.tickets=n; st.v=Date.now();
+  var r=await fetch("/api/admin/user/state",{method:"POST",headers:{"content-type":"application/json","x-admin-key":getKey()},body:JSON.stringify({phone:phone,state:JSON.stringify(st)})});
+  if(r.ok){
+    var delta=n-cur;
+    if(delta!==0) fetch("/api/event",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({phone:phone,type:"ticket",detail:delta})}).catch(function(){});
+    alert("응모권이 "+n+"장으로 변경되었습니다.");
+    setTimeout(load,500);
+  } else alert("변경 실패: "+r.status);
 }
 
 async function editUser(phone){
