@@ -805,8 +805,18 @@ function restoreSession(){
     toast(u.name+"님, 이어서 진행하세요! 🍀");
     if(!courseName) openNameModal("");
   }else{
-    try{ initBoard(); }catch(e){}
-    go("bingo"); openNameModal("");
+    /* 로컬 진행상황이 없으면 서버를 먼저 확인 — 서버에도 없을 때만 새 판 (덮어쓰기 방지) */
+    go("bingo");
+    fetch('/api/state/get',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({phone:u.phone})})
+    .then(function(r){return r.json();}).then(function(d){
+      var sv=null; try{ sv=JSON.parse((d&&d.state)||'null'); }catch(e){}
+      var okv=false; try{ okv=!!(sv&&applyState(sv)); }catch(e){}
+      if(okv){
+        try{localStorage.setItem('snl_state',d.state)}catch(e){}
+        toast(u.name+"님, 이어서 진행하세요! 🍀");
+        if(!courseName) openNameModal("");
+      }else{ try{ initBoard(); }catch(e){} openNameModal(""); }
+    }).catch(function(){ try{ initBoard(); }catch(e){} openNameModal(""); });
   }
 }
 
