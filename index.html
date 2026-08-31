@@ -679,7 +679,7 @@ function trySpecial(idx){
 function confirmSpecial(){
   hideEl("sp-dim");
   if(spWin){
-    board[spIdx]="__special__"; render(); saveState();
+    board[spIdx]="__special__"; stamped[spIdx]=true;
     var u=getUser(); if(u&&u.phone) api("event",{phone:u.phone,type:"special_win"});
     stampSpecial(spIdx);
   }else{
@@ -741,6 +741,14 @@ function applyState(st){
   mode=st.mode||'custom'; board=st.board; stamped=st.stamped||[false,false,false,false,false,false,false,false,false];
   doneLines=st.doneLines||[]; tickets=st.tickets||0; keycapGiven=!!st.keycapGiven;
   courseName=st.courseName||''; specialUsed=!!st.specialUsed;
+  /* 자가복구: 스페셜 당첨 칸은 항상 스탬프로 인정 */
+  var __fx=false;
+  for(var __i=0;__i<9;__i++){ if(board[__i]==='__special__' && !stamped[__i]){ stamped[__i]=true; __fx=true; } }
+  if(__fx){
+    LINES.forEach(function(line,li){ if(doneLines.indexOf(li)<0 && line.every(function(i){return stamped[i];})) doneLines.push(li); });
+    var __sc=stamped.filter(Boolean).length; if(tickets<__sc) tickets=__sc;
+    render(); saveState(); return true;
+  }
   render(); return true;
 }
 function api(path,data){
@@ -981,7 +989,7 @@ function stamp(idx, serverLogged){
 function showTicket(){
   var n=pendingTickets;
   $("tk-title").textContent = batchLines>0 ? "빙고 한 줄 완성! 🎉" : "스탬프 획득! 응모권 도착 🎉";
-  $("tk-label").textContent = "남은 응모권 "+n+"장";
+  $("tk-label").textContent = "응모권 "+(tickets+n)+"장 보유 예정";
   $("tk-num").textContent = "× 1";
   $("tk-g1").style.display = n>1 ? "block" : "none";
   $("tk-g2").style.display = n>2 ? "block" : "none";
