@@ -168,7 +168,7 @@ function showDash(){
   $g('dash').style.display='block';
   load();
   clearInterval(timer);
-  timer=setInterval(load,10000); // 10초마다 실시간 갱신
+  timer=setInterval(function(){ if(!document.hidden) load(); },60000); // 10초마다 실시간 갱신
 }
 async function load(){
   var r=await fetch('/api/admin/data',{headers:{'x-admin-key':getKey()}});
