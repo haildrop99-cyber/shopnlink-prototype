@@ -42,8 +42,14 @@ body{
   animation:seal .7s cubic-bezier(.2,1.5,.4,1) both;
 }
 @keyframes seal{from{opacity:0;transform:translate(-50%,-50%) rotate(-11deg) scale(1.5)}to{opacity:1;transform:translate(-50%,-50%) rotate(-11deg) scale(1)}}
-.seal .en{font-size:10.5px;letter-spacing:2.4px;color:var(--clover);font-weight:800}
-.seal .ko{font-size:clamp(25px,7.6vw,31px);color:var(--deepgreen);line-height:1.15;text-align:center}
+.seal .en{font-size:10.5px;letter-spacing:2.4px;color:var(--clover);font-weight:900}
+/* 브랜드 폰트를 유지하면서 획을 더 굵게 (Cafe24Ssurround는 단일 굵기) */
+.seal .ko{
+  font-size:clamp(27px,8.2vw,34px); color:var(--deepgreen);
+  line-height:1.12; text-align:center; letter-spacing:-.5px;
+  -webkit-text-stroke:2px var(--deepgreen);
+  paint-order:stroke fill;
+}
 .seal .rule{width:52px;height:2px;background:var(--gold);border-radius:2px;margin:1px 0}
 
 .card{
